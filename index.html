@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>StudyMind 4 — All Learning Styles</title>
+<style>
+/* ═══════════ TOKENS ═══════════ */
+:root{
+  --bg:#07090f;--s1:#0d1020;--s2:#131628;--s3:#191e34;--s4:#1f243e;
+  --b1:#212640;--b2:#2b3055;--b3:#363d6a;
+  --amber:#f0a030;--a2:#d96818;--ag:rgba(240,160,48,.1);
+  --teal:#2de8c8;--tg:rgba(45,232,200,.08);--tb:rgba(45,232,200,.22);
+  --violet:#a78bfa;--vg:rgba(167,139,250,.08);--vb:rgba(167,139,250,.22);
+  --rose:#f87171;--rg:rgba(248,113,113,.08);--rb:rgba(248,113,113,.22);
+  --green:#34d399;--gg:rgba(52,211,153,.08);--gb:rgba(52,211,153,.22);
+  --sky:#60a5fa;--sg:rgba(96,165,250,.08);--sb:rgba(96,165,250,.22);
+  --gold:#fbbf24;--tx:#e2ddd4;--tx2:#a8b2d0;--mu:#505878;--wh:#fff;
+  --r:14px;--rs:9px;
+  --serif:'Palatino Linotype',Palatino,Georgia,serif;
+  --sans:'Trebuchet MS','Segoe UI',sans-serif;
+  --mono:'Courier New',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);
+  min-height:100vh;padding:1.8rem 1rem 6rem;line-height:1.8;
+  overflow-x:hidden;position:relative;font-size:15px;}
+.bg-grid{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(240,160,48,.015) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(240,160,48,.015) 1px,transparent 1px);
+  background-size:50px 50px;}
+.orb1{position:fixed;top:-16%;right:-10%;width:580px;height:580px;
+  background:radial-gradient(circle,rgba(240,160,48,.05) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.orb2{position:fixed;bottom:-20%;left:-10%;width:480px;height:480px;
+  background:radial-gradient(circle,rgba(45,232,200,.035) 0%,transparent 65%);pointer-events:none;z-index:0;}
+.page{position:relative;z-index:1;max-width:940px;margin:0 auto;}
+
+/* ═══════════ HEADER ═══════════ */
+header{text-align:center;padding:2rem 0 2.5rem;}
+.logo-row{display:inline-flex;align-items:center;gap:.6rem;background:var(--s2);
+  border:1px solid var(--b2);border-radius:999px;padding:.28rem 1rem .28rem .55rem;margin-bottom:1.3rem;}
+.logo-dot{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--amber),var(--a2));
+  display:flex;align-items:center;justify-content:center;font-size:.9rem;
+  box-shadow:0 0 16px rgba(240,160,48,.36);}
+.logo-lbl{font-family:var(--mono);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--amber);}
+h1{font-family:var(--serif);font-size:clamp(1.9rem,5.2vw,3.2rem);font-weight:400;
+  color:var(--wh);letter-spacing:-.015em;line-height:1.15;margin-bottom:.65rem;}
+h1 em{color:var(--amber);font-style:italic;}
+.tagline{color:var(--mu);font-size:.9rem;max-width:540px;margin:0 auto;}
+.tagline strong{color:var(--tx2);}
+.tagline kbd{background:var(--s3);border:1px solid var(--b2);border-radius:5px;
+  padding:.04rem .4rem;font-family:var(--mono);font-size:.73rem;color:var(--mu);}
+
+/* ═══════════ LEARNING STYLE BADGES ═══════════ */
+.style-badges{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.style-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.28rem .7rem;
+  border-radius:999px;font-size:.73rem;font-weight:600;border:1px solid;background:transparent;
+  font-family:var(--mono);letter-spacing:.04em;}
+.sb-read{border-color:rgba(240,160,48,.3);color:var(--amber);background:rgba(240,160,48,.07);}
+.sb-vis{border-color:var(--tb);color:var(--teal);background:var(--tg);}
+.sb-aud{border-color:var(--vb);color:var(--violet);background:var(--vg);}
+.sb-kin{border-color:var(--gb);color:var(--green);background:var(--gg);}
+
+/* ═══════════ CARDS ═══════════ */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);
+  padding:1.75rem 2rem;margin-bottom:1.3rem;
+  box-shadow:0 2px 40px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.025);transition:border-color .3s;}
+.card:focus-within{border-color:rgba(240,160,48,.28);}
+.sec-lbl{font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--mu);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;}
+.sec-lbl::after{content:'';flex:1;height:1px;background:var(--b1);}
+.sec-lbl .pill{background:var(--s3);border:1px solid var(--b2);border-radius:999px;
+  padding:.08rem .5rem;font-size:.6rem;color:var(--tx2);}
+
+/* ═══════════ INPUT ═══════════ */
+textarea{width:100%;min-height:190px;background:var(--s2);border:1px solid var(--b1);
+  border-radius:var(--rs);color:var(--tx);font-family:var(--sans);font-size:.95rem;
+  line-height:1.8;padding:1.05rem 1.25rem;resize:vertical;outline:none;
+  transition:border-color .25s,box-shadow .25s;}
+textarea::placeholder{color:#232844;}
+textarea:focus{border-color:rgba(240,160,48,.35);box-shadow:0 0 0 3px rgba(240,160,48,.06);}
+.input-meta{display:flex;justify-content:space-between;align-items:center;
+  margin-top:.48rem;flex-wrap:wrap;gap:.4rem;}
+.char-c{font-family:var(--mono);font-size:.65rem;color:var(--mu);}
+.char-c.warn{color:var(--amber);}
+.mode-hint{font-size:.73rem;color:var(--mu);}
+.mode-hint span{display:inline-block;padding:.06rem .42rem;border-radius:4px;
+  background:var(--s3);border:1px solid var(--b2);color:var(--tx2);font-family:var(--mono);font-size:.62rem;margin-left:.3rem;}
+
+/* ═══════════ BUTTONS ═══════════ */
+.btn-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:1.2rem;}
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.68rem 1.4rem;
+  border-radius:var(--rs);font-family:var(--sans);font-size:.88rem;font-weight:700;
+  cursor:pointer;border:none;transition:all .2s;white-space:nowrap;}
+.btn-fire{background:linear-gradient(135deg,var(--amber),var(--a2));color:#fff;
+  box-shadow:0 3px 16px rgba(240,120,30,.28);}
+.btn-fire:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(240,120,30,.44);}
+.btn-fire:active{transform:none;}
+.btn-ghost{background:transparent;color:var(--mu);border:1px solid var(--b1);}
+.btn-ghost:hover{border-color:rgba(240,160,48,.3);color:var(--amber);background:var(--ag);}
+.btn-outline{background:var(--s2);color:var(--tx2);border:1px solid var(--b1);}
+.btn-outline:hover{border-color:var(--tb);color:var(--teal);background:var(--tg);}
+.btn-violet{background:var(--vg);color:var(--violet);border:1px solid var(--vb);}
+.btn-violet:hover{background:rgba(167,139,250,.16);transform:translateY(-1px);}
+.btn-green{background:var(--gg);color:var(--green);border:1px solid var(--gb);}
+.btn-green:hover{background:rgba(52,211,153,.16);}
+.btn-rose{background:var(--rg);color:var(--rose);border:1px solid var(--rb);}
+.btn-sm{padding:.44rem .9rem;font-size:.8rem;}
+.btn:disabled{opacity:.33;cursor:not-allowed;transform:none!important;}
+.btn-ok{color:var(--green)!important;border-color:var(--gb)!important;background:var(--gg)!important;}
+
+/* ═══════════ PROCESSING ═══════════ */
+.proc-row{display:flex;align-items:center;gap:.6rem;color:var(--amber);
+  font-size:.84rem;margin-top:.75rem;opacity:0;transition:opacity .25s;}
+.proc-row.show{opacity:1;}
+.spin{width:14px;height:14px;flex-shrink:0;border:2px solid rgba(240,160,48,.2);
+  border-top-color:var(--amber);border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.proc-steps{display:flex;gap:.45rem;flex-wrap:wrap;}
+.proc-step{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;padding:.08rem .48rem;
+  border-radius:4px;background:rgba(240,160,48,.07);color:var(--amber);opacity:.42;transition:opacity .4s;}
+.proc-step.on{opacity:1;background:rgba(240,160,48,.15);}
+
+/* ═══════════ OUTPUT CARD ═══════════ */
+#out-card{display:none;}
+#out-card.show{display:block;animation:rise .4s cubic-bezier(.22,.87,.35,1);}
+@keyframes rise{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* Stats bar */
+.stats-bar{display:flex;flex-wrap:wrap;gap:.38rem;padding:.65rem .95rem;
+  background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);margin-bottom:1.2rem;}
+.sc{display:inline-flex;align-items:center;gap:.28rem;font-family:var(--mono);font-size:.63rem;
+  padding:.14rem .5rem;border-radius:999px;background:var(--s3);border:1px solid var(--b2);color:var(--tx2);}
+.sc.amber{border-color:rgba(240,160,48,.25);color:var(--amber);background:var(--ag);}
+.sc.teal{border-color:var(--tb);color:var(--teal);background:var(--tg);}
+.sc.violet{border-color:var(--vb);color:var(--violet);background:var(--vg);}
+.sc.green{border-color:var(--gb);color:var(--green);background:var(--gg);}
+.sc.sky{border-color:var(--sb);color:var(--sky);background:var(--sg);}
+
+/* ═══════════ TAB BAR ═══════════ */
+.tab-bar{display:flex;gap:.3rem;flex-wrap:wrap;padding:.5rem;
+  background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);
+  margin-bottom:1.4rem;position:sticky;top:.5rem;z-index:20;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);}
+.tab-btn{display:inline-flex;align-items:center;gap:.42rem;
+  padding:.55rem 1.05rem;border-radius:9px;font-family:var(--sans);font-size:.83rem;
+  font-weight:600;cursor:pointer;border:1px solid transparent;
+  background:transparent;color:var(--mu);transition:all .22s;flex:1;justify-content:center;
+  min-width:120px;}
+.tab-btn:hover{background:var(--s3);color:var(--tx2);border-color:var(--b2);}
+.tab-btn.active{color:var(--wh);border-color:transparent;}
+.tab-btn[data-tab="notes"].active{background:linear-gradient(135deg,rgba(240,160,48,.25),rgba(240,160,48,.1));
+  border-color:rgba(240,160,48,.35);color:var(--amber);}
+.tab-btn[data-tab="exam"].active{background:linear-gradient(135deg,rgba(167,139,250,.2),rgba(167,139,250,.08));
+  border-color:var(--vb);color:var(--violet);}
+.tab-btn[data-tab="visual"].active{background:linear-gradient(135deg,rgba(45,232,200,.15),rgba(45,232,200,.06));
+  border-color:var(--tb);color:var(--teal);}
+.tab-btn[data-tab="audio"].active{background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(96,165,250,.07));
+  border-color:var(--sb);color:var(--sky);}
+.tab-btn[data-tab="interactive"].active{background:linear-gradient(135deg,rgba(52,211,153,.18),rgba(52,211,153,.07));
+  border-color:var(--gb);color:var(--green);}
+.tab-panel{display:none;animation:fi .28s ease;}
+.tab-panel.show{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+/* ═══════════ SHARED NOTE STYLES ═══════════ */
+.topic-banner{display:flex;align-items:center;gap:1rem;padding:.95rem 1.25rem;
+  background:linear-gradient(135deg,rgba(240,160,48,.09),rgba(240,160,48,.025));
+  border:1px solid rgba(240,160,48,.2);border-radius:var(--rs);margin-bottom:1.35rem;}
+.topic-icon-big{font-size:1.9rem;flex-shrink:0;}
+.topic-title{font-family:var(--serif);font-size:1.35rem;color:var(--wh);font-weight:400;}
+.topic-sub{font-size:.77rem;color:var(--mu);margin-top:.12rem;}
+.n-head{font-family:var(--serif);font-size:1.02rem;font-weight:600;color:var(--wh);
+  padding:.36rem .82rem .34rem .92rem;border-left:3px solid var(--amber);margin-bottom:.72rem;
+  background:linear-gradient(90deg,rgba(240,160,48,.07) 0%,transparent 72%);border-radius:0 6px 6px 0;}
+.blist{list-style:none;padding:0;display:flex;flex-direction:column;gap:.03rem;}
+.blist li{display:flex;align-items:flex-start;gap:.7rem;font-size:.93rem;
+  line-height:1.82;padding:.25rem .28rem .25rem .06rem;border-radius:7px;transition:background .15s;
+  animation:fi .28s ease both;}
+.blist li:hover{background:rgba(255,255,255,.02);}
+.dot{flex-shrink:0;width:7px;height:7px;border-radius:50%;margin-top:.7em;}
+.dot.amber{background:var(--amber);box-shadow:0 0 7px rgba(240,160,48,.35);}
+.dot.violet{background:var(--violet);}
+.dot.teal{background:var(--teal);}
+.dot.rose{background:var(--rose);}
+.dot.green{background:var(--green);}
+.dot.sky{background:var(--sky);}
+.blist li .tx strong{color:var(--gold);font-weight:700;}
+.blist li .tx code{font-family:var(--mono);font-size:.81em;background:rgba(96,165,250,.1);
+  color:var(--sky);padding:.02rem .28rem;border-radius:4px;border:1px solid rgba(96,165,250,.17);}
+.def-badge{flex-shrink:0;align-self:flex-start;margin-top:.48em;font-family:var(--mono);
+  font-size:.56rem;letter-spacing:.07em;text-transform:uppercase;padding:.04rem .38rem;
+  border-radius:4px;background:rgba(240,160,48,.11);color:var(--amber);border:1px solid rgba(240,160,48,.24);}
+.sdiv{border:none;border-top:1px dashed rgba(255,255,255,.055);margin:1.4rem 0;}
+.out-head{display:flex;align-items:center;gap:.6rem;font-family:var(--mono);font-size:.66rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:.9rem;
+  padding-bottom:.5rem;border-bottom:1px solid var(--b1);}
+.ico{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:.85rem;flex-shrink:0;}
+.ico.amber{background:rgba(240,160,48,.14);}
+.ico.violet{background:rgba(167,139,250,.12);}
+.ico.teal{background:rgba(45,232,200,.11);}
+.ico.green{background:rgba(52,211,153,.11);}
+.ico.sky{background:rgba(96,165,250,.12);}
+.ico.rose{background:rgba(248,113,113,.11);}
+
+/* ═══════════ EXAM CARDS ═══════════ */
+.exam-grid{display:flex;flex-direction:column;gap:.5rem;}
+.exam-card{display:flex;gap:.82rem;align-items:flex-start;background:var(--s2);
+  border:1px solid var(--b1);border-radius:var(--rs);padding:.75rem .95rem;
+  transition:border-color .2s,background .2s;animation:fi .3s ease both;}
+.exam-card:hover{border-color:var(--vb);background:var(--vg);}
+.exam-num{flex-shrink:0;width:24px;height:24px;border-radius:6px;background:var(--vg);
+  border:1px solid var(--vb);color:var(--violet);font-family:var(--mono);font-size:.7rem;
+  font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:.1rem;}
+.exam-txt{font-size:.91rem;line-height:1.74;color:var(--tx);}
+.exam-txt strong{color:var(--gold);}
+.exam-tag{margin-top:.26rem;display:inline-block;font-family:var(--mono);font-size:.58rem;
+  letter-spacing:.07em;text-transform:uppercase;padding:.04rem .38rem;border-radius:4px;
+  background:rgba(167,139,250,.09);color:var(--violet);border:1px solid var(--vb);}
+
+/* ═══════════ KEY TERMS ═══════════ */
+.terms-grid{display:flex;flex-wrap:wrap;gap:.45rem;}
+.tp{font-family:var(--mono);font-size:.74rem;padding:.2rem .66rem;border-radius:999px;cursor:default;
+  transition:background .15s,transform .15s;}
+.tp:hover{transform:scale(1.05);}
+.tp.amber{background:rgba(240,160,48,.1);color:var(--gold);border:1px solid rgba(240,160,48,.22);}
+.tp.teal{background:var(--tg);color:var(--teal);border:1px solid var(--tb);}
+.tp.sky{background:var(--sg);color:var(--sky);border:1px solid var(--sb);}
+
+/* ═══════════ VISUAL TAB ═══════════ */
+.vl-tabs{display:flex;gap:.45rem;margin-bottom:1.15rem;flex-wrap:wrap;}
+.vl-tab{padding:.42rem .95rem;border-radius:999px;cursor:pointer;font-size:.8rem;
+  font-weight:600;font-family:var(--mono);border:1px solid var(--b2);
+  background:var(--s2);color:var(--mu);transition:all .2s;}
+.vl-tab:hover{color:var(--teal);border-color:var(--tb);}
+.vl-tab.ac-mm{background:var(--tg);border-color:var(--teal);color:var(--teal);}
+.vl-tab.ac-fc{background:var(--vg);border-color:var(--violet);color:var(--violet);}
+.vl-tab.ac-gi{background:var(--sg);border-color:var(--sky);color:var(--sky);}
+.vl-panel{display:none;}
+.vl-panel.show{display:block;animation:fi .3s ease;}
+.mm-wrap{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);padding:1rem;overflow-x:auto;}
+.fc-wrap{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);padding:1.1rem 1.4rem;overflow-x:auto;}
+.fc-inner{display:flex;flex-direction:column;align-items:flex-start;gap:0;min-width:280px;}
+.fc-box{background:var(--s3);border:1px solid var(--vb);border-radius:8px;
+  padding:.56rem 1.05rem;color:var(--tx);font-size:.87rem;line-height:1.6;
+  min-width:210px;max-width:480px;animation:fi .3s ease both;}
+.fc-box .step-lbl{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--violet);display:block;margin-bottom:.18rem;opacity:.8;}
+.fc-box strong{color:var(--violet);}
+.fc-box.decision{border-color:var(--amber);background:linear-gradient(135deg,rgba(240,160,48,.07),var(--s3));}
+.fc-box.decision strong,.fc-box.decision .step-lbl{color:var(--amber);}
+.fc-box.output{border-color:var(--green);background:linear-gradient(135deg,rgba(52,211,153,.06),var(--s3));}
+.fc-box.output strong,.fc-box.output .step-lbl{color:var(--green);}
+.fc-arrow{display:flex;flex-direction:column;padding-left:1.55rem;position:relative;}
+.fc-arrow::before{content:'';position:absolute;left:1.9rem;top:0;bottom:.95rem;
+  width:2px;background:linear-gradient(to bottom,var(--violet),rgba(167,139,250,.28));border-radius:1px;}
+.fc-arrow::after{content:'▼';position:absolute;left:1.56rem;bottom:.05rem;
+  font-size:.72rem;color:var(--violet);line-height:1;}
+.gi-grid{display:flex;flex-direction:column;gap:.9rem;}
+.gi-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);
+  padding:.95rem 1.1rem;display:flex;gap:1.1rem;align-items:flex-start;flex-wrap:wrap;
+  animation:fi .3s ease both;}
+.gi-plot{flex-shrink:0;background:var(--s3);border:1px solid var(--b2);border-radius:8px;overflow:hidden;}
+.gi-info{flex:1;min-width:170px;}
+.gi-title{font-family:var(--mono);font-size:.67rem;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--sky);margin-bottom:.38rem;}
+.gi-desc{font-size:.87rem;line-height:1.7;color:var(--tx);}
+.gi-desc strong{color:var(--gold);}
+.gi-note{margin-top:.48rem;font-family:var(--mono);font-size:.72rem;color:var(--mu);
+  padding:.25rem .55rem;background:var(--s3);border-radius:5px;border-left:2px solid var(--sky);}
+
+/* ═══════════ AUDIO TAB ═══════════ */
+.audio-hero{background:linear-gradient(135deg,rgba(96,165,250,.08),rgba(96,165,250,.03));
+  border:1px solid var(--sb);border-radius:var(--r);padding:1.5rem 1.75rem;margin-bottom:1.2rem;}
+.audio-title{font-family:var(--serif);font-size:1.1rem;color:var(--wh);margin-bottom:.3rem;}
+.audio-sub{font-size:.82rem;color:var(--mu);margin-bottom:1.1rem;}
+.audio-controls{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;}
+.audio-speed{display:flex;align-items:center;gap:.55rem;margin-left:.5rem;}
+.audio-speed label{font-family:var(--mono);font-size:.65rem;color:var(--mu);}
+.audio-speed select{background:var(--s3);border:1px solid var(--b2);border-radius:6px;
+  color:var(--tx2);font-family:var(--mono);font-size:.75rem;padding:.25rem .4rem;outline:none;}
+.waveform{display:flex;align-items:center;gap:3px;height:28px;margin-top:.5rem;}
+.wv-bar{width:3px;border-radius:2px;background:var(--sky);opacity:.3;
+  animation:none;transition:opacity .3s;}
+.waveform.playing .wv-bar{opacity:1;}
+.waveform.playing .wv-bar:nth-child(1){animation:wave 1.0s ease-in-out infinite;}
+.waveform.playing .wv-bar:nth-child(2){animation:wave 1.0s ease-in-out .1s infinite;}
+.waveform.playing .wv-bar:nth-child(3){animation:wave 1.0s ease-in-out .2s infinite;}
+.waveform.playing .wv-bar:nth-child(4){animation:wave 1.0s ease-in-out .3s infinite;}
+.waveform.playing .wv-bar:nth-child(5){animation:wave 1.0s ease-in-out .15s infinite;}
+.waveform.playing .wv-bar:nth-child(6){animation:wave 1.0s ease-in-out .05s infinite;}
+.waveform.playing .wv-bar:nth-child(7){animation:wave 1.0s ease-in-out .25s infinite;}
+.waveform.playing .wv-bar:nth-child(8){animation:wave 1.0s ease-in-out .35s infinite;}
+@keyframes wave{0%,100%{height:4px;}50%{height:22px;}}
+.audio-reading-box{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);
+  padding:1rem 1.2rem;font-size:.91rem;line-height:1.85;color:var(--tx2);
+  max-height:200px;overflow-y:auto;font-style:italic;}
+.audio-reading-box .current-word{color:var(--sky);font-style:normal;font-weight:600;
+  background:rgba(96,165,250,.15);border-radius:3px;padding:0 2px;}
+.audio-mode-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem;}
+.audio-mode-btn{padding:.42rem .95rem;border-radius:999px;font-size:.78rem;font-weight:600;
+  border:1px solid var(--b2);background:var(--s2);color:var(--mu);cursor:pointer;transition:all .2s;}
+.audio-mode-btn.active{background:var(--sg);border-color:var(--sb);color:var(--sky);}
+.audio-mode-btn:hover{border-color:var(--sb);color:var(--sky);}
+.audio-status{font-family:var(--mono);font-size:.68rem;color:var(--mu);margin-top:.5rem;}
+.audio-status.playing{color:var(--sky);}
+.audio-status.stopped{color:var(--mu);}
+
+/* ═══════════ INTERACTIVE TAB ═══════════ */
+.int-mode-bar{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.int-mode-btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.05rem;
+  border-radius:999px;font-size:.8rem;font-weight:600;border:1px solid var(--b2);
+  background:var(--s2);color:var(--mu);cursor:pointer;transition:all .2s;font-family:var(--mono);}
+.int-mode-btn:hover{border-color:var(--gb);color:var(--green);}
+.int-mode-btn.active{background:var(--gg);border-color:var(--green);color:var(--green);}
+.int-panel{display:none;}
+.int-panel.show{display:block;animation:fi .3s ease;}
+
+/* Step-by-step */
+.step-progress{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;font-family:var(--mono);font-size:.7rem;color:var(--mu);}
+.step-track{flex:1;height:4px;background:var(--b1);border-radius:2px;overflow:hidden;}
+.step-fill{height:100%;background:var(--green);border-radius:2px;transition:width .4s ease;}
+.step-card{background:var(--s2);border:1px solid var(--gb);border-radius:var(--r);
+  padding:1.5rem 1.75rem;min-height:140px;animation:fi .3s ease;}
+.step-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--green);display:block;margin-bottom:.5rem;opacity:.85;}
+.step-content{font-size:.97rem;line-height:1.82;color:var(--tx);}
+.step-content strong{color:var(--gold);}
+.step-nav{display:flex;gap:.65rem;align-items:center;margin-top:1rem;flex-wrap:wrap;}
+.step-counter{font-family:var(--mono);font-size:.72rem;color:var(--mu);margin-left:auto;}
+.step-list{margin-top:1rem;display:flex;flex-direction:column;gap:.3rem;}
+.step-item{display:flex;align-items:flex-start;gap:.6rem;padding:.3rem .4rem;
+  border-radius:6px;font-size:.85rem;color:var(--mu);transition:all .25s;}
+.step-item.done{color:var(--tx);background:rgba(52,211,153,.06);}
+.step-item.current{color:var(--green);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);}
+.step-item .si-num{font-family:var(--mono);font-size:.65rem;color:inherit;opacity:.7;flex-shrink:0;margin-top:.1em;}
+
+/* Self test */
+.qa-progress{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;}
+.qa-track{flex:1;height:4px;background:var(--b1);border-radius:2px;overflow:hidden;}
+.qa-fill{height:100%;background:var(--violet);border-radius:2px;transition:width .4s ease;}
+.qa-score{font-family:var(--mono);font-size:.7rem;color:var(--mu);}
+.qa-card{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);
+  padding:1.5rem 1.75rem;margin-bottom:1rem;}
+.qa-tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--violet);display:block;margin-bottom:.7rem;}
+.qa-q{font-size:1.02rem;line-height:1.7;color:var(--wh);font-family:var(--serif);
+  font-weight:400;margin-bottom:1rem;}
+.qa-a{background:var(--vg);border:1px solid var(--vb);border-radius:var(--rs);
+  padding:.9rem 1.1rem;font-size:.9rem;line-height:1.75;color:var(--tx);
+  display:none;animation:fi .3s ease;}
+.qa-a.show{display:block;}
+.qa-a strong{color:var(--gold);}
+.qa-controls{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.qa-result-btns{display:flex;gap:.5rem;margin-top:.7rem;}
+.qa-summary{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);
+  padding:1.4rem 1.6rem;text-align:center;}
+.qa-score-big{font-family:var(--serif);font-size:2.5rem;color:var(--violet);margin-bottom:.3rem;}
+.qa-score-lbl{font-size:.85rem;color:var(--mu);}
+.qa-badges{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:.9rem;}
+.qa-badge{padding:.25rem .7rem;border-radius:999px;font-family:var(--mono);font-size:.7rem;}
+.qb-g{background:var(--gg);color:var(--green);border:1px solid var(--gb);}
+.qb-b{background:var(--rg);color:var(--rose);border:1px solid var(--rb);}
+
+/* Concept explorer */
+.toggle-list{display:flex;flex-direction:column;gap:.5rem;}
+.toggle-item{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);overflow:hidden;}
+.toggle-hd{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;
+  cursor:pointer;transition:background .2s;user-select:none;}
+.toggle-hd:hover{background:var(--s3);}
+.toggle-hd.open{background:var(--s3);border-bottom:1px solid var(--b1);}
+.toggle-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:.85rem;flex-shrink:0;}
+.toggle-label{font-weight:600;font-size:.92rem;color:var(--tx);flex:1;}
+.toggle-arrow{font-size:.75rem;color:var(--mu);transition:transform .25s;margin-left:auto;}
+.toggle-hd.open .toggle-arrow{transform:rotate(180deg);}
+.toggle-body{display:none;padding:.75rem 1rem .85rem 2.7rem;}
+.toggle-body.show{display:block;animation:fi .25s ease;}
+.toggle-body ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:.25rem;}
+.toggle-body li{display:flex;align-items:flex-start;gap:.55rem;font-size:.88rem;line-height:1.7;color:var(--tx2);}
+.toggle-body li::before{content:'›';color:var(--green);flex-shrink:0;font-size:1rem;line-height:1.5;}
+
+/* ═══════════ CRASH COURSE ═══════════ */
+.crash-banner{background:var(--rg);border:1px solid var(--rb);border-radius:var(--rs);
+  padding:.68rem 1rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:.7rem;
+  font-size:.83rem;color:var(--rose);}
+.crash-banner strong{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;}
+.formula-bar{background:rgba(248,113,113,.06);border:1px solid var(--rb);border-radius:8px;
+  padding:.6rem 1rem;margin-bottom:.85rem;font-family:var(--mono);font-size:.8rem;color:var(--rose);}
+.formula-bar .fb-lbl{opacity:.6;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  display:block;margin-bottom:.15rem;}
+
+/* ═══════════ STUDY TIP ═══════════ */
+.study-tip{background:var(--tg);border:1px solid var(--tb);border-radius:var(--rs);
+  padding:.8rem 1.05rem;display:flex;gap:.75rem;align-items:flex-start;}
+.st-icon{font-size:1.15rem;flex-shrink:0;}
+.st-label{font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:.16rem;}
+.st-text{font-size:.86rem;color:var(--tx2);}
+
+/* ═══════════ OUTPUT ACTIONS ═══════════ */
+.out-actions{display:flex;gap:.65rem;flex-wrap:wrap;
+  margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--b1);}
+
+/* ═══════════ TIPS ROW ═══════════ */
+.tips-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.6rem;margin-top:.4rem;}
+.tip-card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rs);
+  padding:.8rem .95rem;font-size:.78rem;color:var(--mu);}
+.tip-card strong{color:var(--tx2);display:block;margin-bottom:.14rem;}
+
+/* ═══════════ EMPTY STATE ═══════════ */
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--mu);}
+.empty-state .es-icon{font-size:2rem;margin-bottom:.75rem;opacity:.4;}
+.empty-state p{font-size:.88rem;}
+
+/* ═══════════ MOBILE ═══════════ */
+@media(max-width:640px){
+  .card{padding:1.15rem .95rem;}
+  h1{font-size:1.75rem;}
+  .btn{padding:.6rem .95rem;font-size:.83rem;}
+  .tab-btn{font-size:.74rem;padding:.48rem .7rem;min-width:90px;}
+  .topic-title{font-size:1.1rem;}
+  .fc-box{min-width:160px;}
+  .style-badges{gap:.35rem;}
+}
+
+/* ═══════════ PRINT ═══════════ */
+@media print{
+  body{background:#fff;color:#111;padding:1rem;}
+  .bg-grid,.orb1,.orb2,header,.card:not(#out-card),.out-actions,.tips-row,
+  #input-card,.proc-row,.stats-bar,.tab-bar,.audio-hero,
+  .int-mode-bar,.audio-controls{display:none!important;}
+  #out-card{display:block!important;box-shadow:none;border:none;padding:0;}
+  .tab-panel{display:block!important;}
+  .card{border:1px solid #ddd;background:#fff;box-shadow:none;}
+  .n-head{background:#f5f5ed;color:#111;}
+  .exam-card{background:#f8f5ff;border-color:#d4bbff;}
+  .topic-banner{background:#fff8ec;border-color:#e6b840;}
+  strong{color:#7a4a00!important;}
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div><div class="orb1"></div><div class="orb2"></div>
+<div class="page">
+
+<!-- HEADER -->
+<header>
+  <div class="logo-row">
+    <div class="logo-dot">&#129504;</div>
+    <span class="logo-lbl">StudyMind 4.0 &mdash; All Learning Styles</span>
+  </div>
+  <h1>Your Complete<br><em>Study Assistant</em></h1>
+  <p class="tagline">Paste rough notes &rarr; get <strong>structured notes, exam tips, visuals, audio &amp; interactive quizzes</strong>.<br>
+    Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to run &bull; Fully offline.</p>
+  <div class="style-badges">
+    <span class="style-badge sb-read">&#128221; Reading / Writing</span>
+    <span class="style-badge sb-vis">&#127757; Visual</span>
+    <span class="style-badge sb-aud">&#128266; Auditory</span>
+    <span class="style-badge sb-kin">&#9995; Kinesthetic</span>
+  </div>
+</header>
+
+<!-- INPUT -->
+<div class="card" id="input-card">
+  <div class="sec-lbl">
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+    Your Notes Input
+    <span class="pill">Paste anything &mdash; messy is fine</span>
+  </div>
+  <textarea id="inp" spellcheck="false"
+    placeholder="Paste your rough notes here&#10;&#10;Examples:&#10;&#8226; &quot;photosynthesis is the process by which plants use sunlight to produce glucose...&quot;&#10;&#8226; &quot;study trig identities and sin cos tan formulas&quot;&#10;&#8226; &quot;digestion starts in mouth, enzymes break food, small intestine absorbs...&quot;"></textarea>
+  <div class="input-meta">
+    <span class="char-c" id="char-c">0 characters</span>
+    <span class="mode-hint">Mode:<span id="mode-tag">&mdash;</span></span>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-fire" id="run-btn" onclick="run()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+      Improve My Notes
+    </button>
+    <button class="btn btn-ghost" onclick="clearAll()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+      </svg>
+      Clear
+    </button>
+  </div>
+  <div class="proc-row" id="proc">
+    <div class="spin"></div>
+    <div class="proc-steps">
+      <span class="proc-step" id="ps1">Detecting topic</span>
+      <span class="proc-step" id="ps2">Cleaning text</span>
+      <span class="proc-step" id="ps3">Building notes</span>
+      <span class="proc-step" id="ps4">Exam content</span>
+      <span class="proc-step" id="ps5">Visuals &amp; quiz</span>
+    </div>
+  </div>
+</div>
+
+<!-- OUTPUT -->
+<div class="card" id="out-card">
+  <div class="stats-bar" id="stats-bar"></div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar" id="tab-bar">
+    <button class="tab-btn active" data-tab="notes" onclick="switchTab('notes',this)">&#128221; Notes</button>
+    <button class="tab-btn" data-tab="exam" onclick="switchTab('exam',this)">&#127919; Exam Focus</button>
+    <button class="tab-btn" data-tab="visual" onclick="switchTab('visual',this)">&#127757; Visual</button>
+    <button class="tab-btn" data-tab="audio" onclick="switchTab('audio',this)">&#128266; Audio</button>
+    <button class="tab-btn" data-tab="interactive" onclick="switchTab('interactive',this)">&#9995; Interactive</button>
+  </div>
+
+  <!-- NOTES TAB -->
+  <div class="tab-panel show" id="tab-notes">
+    <div id="notes-content"></div>
+  </div>
+
+  <!-- EXAM FOCUS TAB -->
+  <div class="tab-panel" id="tab-exam">
+    <div id="exam-content"></div>
+  </div>
+
+  <!-- VISUAL TAB -->
+  <div class="tab-panel" id="tab-visual">
+    <div id="visual-content"></div>
+  </div>
+
+  <!-- AUDIO TAB -->
+  <div class="tab-panel" id="tab-audio">
+    <div class="audio-hero">
+      <div class="audio-title">&#128266; Audio Learning</div>
+      <div class="audio-sub">Listen to your notes read aloud. Great for auditory learners and revision on the go.</div>
+      <div class="audio-mode-btns">
+        <button class="audio-mode-btn active" onclick="setAudioMode('notes',this)">&#128221; Read Notes</button>
+        <button class="audio-mode-btn" onclick="setAudioMode('exam',this)">&#127919; Read Exam Tips</button>
+        <button class="audio-mode-btn" onclick="setAudioMode('summary',this)">&#9889; Quick Summary</button>
+      </div>
+      <div class="audio-controls">
+        <button class="btn btn-outline btn-sm" id="play-btn" onclick="audioPlay()">&#9654; Play</button>
+        <button class="btn btn-ghost btn-sm" id="pause-btn" onclick="audioPause()" disabled>&#9646;&#9646; Pause</button>
+        <button class="btn btn-ghost btn-sm" onclick="audioStop()">&#9632; Stop</button>
+        <div class="audio-speed">
+          <label>Speed:</label>
+          <select id="speech-rate" onchange="audioChangeRate(this.value)">
+            <option value="0.7">0.7×</option>
+            <option value="0.85">0.85×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.2">1.2×</option>
+            <option value="1.5">1.5×</option>
+          </select>
+        </div>
+      </div>
+      <div class="waveform" id="waveform">
+        <div class="wv-bar" style="height:6px"></div>
+        <div class="wv-bar" style="height:14px"></div>
+        <div class="wv-bar" style="height:20px"></div>
+        <div class="wv-bar" style="height:10px"></div>
+        <div class="wv-bar" style="height:18px"></div>
+        <div class="wv-bar" style="height:8px"></div>
+        <div class="wv-bar" style="height:22px"></div>
+        <div class="wv-bar" style="height:12px"></div>
+      </div>
+      <div class="audio-status stopped" id="audio-status">Ready &mdash; press Play to begin</div>
+    </div>
+    <div class="audio-reading-box" id="audio-reading-box">
+      <em style="color:var(--mu)">The text being read will appear here&hellip;</em>
+    </div>
+  </div>
+
+  <!-- INTERACTIVE TAB -->
+  <div class="tab-panel" id="tab-interactive">
+    <div class="int-mode-bar">
+      <button class="int-mode-btn active" onclick="setIntMode('step',this)">&#9654; Step-by-Step</button>
+      <button class="int-mode-btn" onclick="setIntMode('quiz',this)">&#10067; Self Test</button>
+      <button class="int-mode-btn" onclick="setIntMode('explore',this)">&#128218; Concept Explorer</button>
+    </div>
+    <div class="int-panel show" id="int-step">
+      <div id="step-content"></div>
+    </div>
+    <div class="int-panel" id="int-quiz">
+      <div id="quiz-content"></div>
+    </div>
+    <div class="int-panel" id="int-explore">
+      <div id="explore-content"></div>
+    </div>
+  </div>
+
+  <!-- OUTPUT ACTIONS -->
+  <div class="out-actions">
+    <button class="btn btn-outline btn-sm" id="copy-btn" onclick="copyNotes()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      Copy Notes
+    </button>
+    <button class="btn btn-outline btn-sm" onclick="window.print()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 6 2 18 2 18 9"/>
+        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+        <rect x="6" y="14" width="12" height="8"/>
+      </svg>
+      Print / PDF
+    </button>
+  </div>
+</div>
+
+<!-- TIPS -->
+<div class="tips-row">
+  <div class="tip-card"><strong>&#128221; Notes Tab</strong>Clean structured notes for reading &amp; writing learners &mdash; headings, bullets, definitions.</div>
+  <div class="tip-card"><strong>&#127757; Visual Tab</strong>Mind maps, flowcharts &amp; graph sketches drawn automatically for your topic.</div>
+  <div class="tip-card"><strong>&#128266; Audio Tab</strong>Hit Play &mdash; your notes are read aloud at adjustable speed. Works offline using your browser.</div>
+  <div class="tip-card"><strong>&#9995; Interactive Tab</strong>Step-by-step mode, self-test quiz &amp; concept explorer for active, hands-on learners.</div>
+</div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   GLOBAL STATE
+═══════════════════════════════════════════════════════ */
+let G = {}; // stores current processed result
+
+/* ═══════════════════════════════════════════════════════
+   KNOWLEDGE BASE
+═══════════════════════════════════════════════════════ */
+const KB=[
+{id:'photosynthesis',label:'Photosynthesis',icon:'&#127807;',
+ keys:/\b(photosynth|chlorophyll|chloroplast|thylakoid|calvin.cycle|light.dependent|light.independent|guard.cell|mesophyll|stomata|xylem|phloem|transpir)\b/i,
+ domain:'biology',
+ examFocus:[
+  {text:'<strong>Overall equation:</strong> 6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂. Know both word and symbol forms.',tag:'Equation'},
+  {text:'<strong>Light-dependent reactions</strong> occur in the thylakoid membrane — produce ATP, NADPH, and split water (photolysis).',tag:'Stage 1'},
+  {text:'<strong>Calvin Cycle</strong> occurs in the stroma — uses ATP + NADPH to fix CO₂ into glucose via RuBisCO enzyme.',tag:'Stage 2'},
+  {text:'Limiting factors: <strong>light intensity, CO₂ concentration, temperature</strong>. Know how each plateau graph looks.',tag:'Graphs'},
+  {text:'Chlorophyll absorbs <strong>red and blue</strong> light; reflects green. Chromatography separates pigments.',tag:'Pigments'},
+ ],
+ keyTerms:['photosynthesis','chlorophyll','chloroplast','thylakoid','stroma','Calvin cycle','glucose','ATP','NADPH','stomata','limiting factors','RuBisCO'],
+ qa:[
+  {q:'State the overall equation for photosynthesis.',a:'6CO₂ + 6H₂O + light energy → C₆H₁₂O₆ + 6O₂',tag:'Equation'},
+  {q:'Where do light-dependent reactions occur, and what do they produce?',a:'In the thylakoid membrane. They produce ATP, NADPH, and release O₂ (from photolysis of water).',tag:'Stage 1'},
+  {q:'What happens in the Calvin Cycle and where does it take place?',a:'In the stroma. CO₂ is fixed using ATP + NADPH via the enzyme RuBisCO to produce glucose.',tag:'Stage 2'},
+  {q:'Name three factors that limit the rate of photosynthesis.',a:'Light intensity, carbon dioxide concentration, and temperature. Each has a different plateau point.',tag:'Limiting factors'},
+  {q:'Why does a plant appear green?',a:'Chlorophyll absorbs red and blue wavelengths of light but reflects green light back to our eyes.',tag:'Pigments'},
+ ],
+ visual:{
+  mindmap:{root:'Photosynthesis',branches:[
+   {label:'Definition',color:'#f0a030',children:['Converts light → chemical energy','Occurs in chloroplasts','Produces glucose + O₂']},
+   {label:'Stage 1: Light Reactions',color:'#2de8c8',children:['In thylakoid membrane','Water split (photolysis)','ATP + NADPH produced','O₂ released']},
+   {label:'Stage 2: Calvin Cycle',color:'#a78bfa',children:['In stroma','CO₂ fixed by RuBisCO','Uses ATP + NADPH','Glucose produced']},
+   {label:'Limiting Factors',color:'#f87171',children:['Light intensity','CO₂ concentration','Temperature']},
+   {label:'Outputs',color:'#34d399',children:['Glucose (C₆H₁₂O₆)','Oxygen (O₂)']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Step 1',text:'Sunlight hits chlorophyll in thylakoid membrane'},
+   {type:'process',label:'Step 2',text:'Water split by photolysis → H⁺ ions + O₂ released'},
+   {type:'process',label:'Step 3',text:'ATP and NADPH produced from light energy'},
+   {type:'process',label:'Step 4',text:'CO₂ enters leaf through stomata'},
+   {type:'process',label:'Step 5',text:'Calvin Cycle: CO₂ fixed by RuBisCO in stroma'},
+   {type:'output',label:'Result',text:'Glucose (C₆H₁₂O₆) + Oxygen (O₂) produced'},
+  ],
+  graphs:[
+   {title:'Light Intensity vs Rate of Photosynthesis',type:'plateau',color:'#2de8c8',xLabel:'Light Intensity →',yLabel:'Rate →',
+    desc:'Rises steeply at low light, then <strong>plateaus</strong> when another factor (CO₂ or temperature) becomes limiting.',
+    note:'At plateau: adding more light has NO effect. State the limiting factor.'},
+   {title:'Temperature vs Rate of Photosynthesis',type:'bell',color:'#f87171',xLabel:'Temperature →',yLabel:'Rate →',
+    desc:'Increases to optimum (~25°C), then <strong>falls sharply</strong> as enzymes denature above optimal temperature.',
+    note:'Above optimum = enzyme active site denatured → rate drops to zero.'},
+  ]
+ }
+},
+{id:'respiration',label:'Cellular Respiration',icon:'&#9889;',
+ keys:/\b(respir\w+|glycolysis|krebs.cycle|citric.acid|mitochondri\w+|aerobic|anaerobic|ferment\w+|atp.synth\w+|electron.transport|nadh|fadh)\b/i,
+ domain:'biology',
+ examFocus:[
+  {text:'<strong>Aerobic equation:</strong> C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 38 ATP. Anaerobic gives only 2 ATP.',tag:'Equation'},
+  {text:'<strong>Glycolysis</strong> (cytoplasm): glucose → 2 pyruvate + 2 ATP + 2 NADH.',tag:'Stage 1'},
+  {text:'<strong>Krebs Cycle</strong> (matrix): per glucose: 2 ATP, 6 NADH, 2 FADH₂, 4 CO₂ released.',tag:'Stage 2'},
+  {text:'<strong>ETC</strong> (inner membrane): NADH/FADH₂ drive H⁺ gradient → ATP synthase → 34 ATP.',tag:'Stage 3'},
+  {text:'Anaerobic: animals → lactic acid; yeast → ethanol + CO₂. Both regenerate NAD⁺ to keep glycolysis running.',tag:'Anaerobic'},
+ ],
+ keyTerms:['glycolysis','pyruvate','Krebs cycle','ATP synthase','mitochondria','NADH','FADH₂','aerobic','anaerobic','fermentation'],
+ qa:[
+  {q:'Compare the ATP yield of aerobic vs anaerobic respiration.',a:'Aerobic respiration produces 38 ATP per glucose. Anaerobic produces only 2 ATP.',tag:'ATP yield'},
+  {q:'Where does glycolysis occur and what does it produce?',a:'Glycolysis occurs in the cytoplasm. It converts glucose into 2 pyruvate molecules, producing 2 ATP and 2 NADH.',tag:'Glycolysis'},
+  {q:'Describe the role of the electron transport chain.',a:'Located in the inner mitochondrial membrane. NADH and FADH₂ donate electrons, driving a proton gradient that powers ATP synthase to produce ~34 ATP.',tag:'ETC'},
+  {q:'What happens in anaerobic respiration in humans?',a:'Without oxygen, pyruvate is converted to lactic acid. This regenerates NAD⁺ so glycolysis can continue, producing 2 ATP.',tag:'Anaerobic'},
+  {q:'What is the role of NAD⁺ in respiration?',a:'NAD⁺ accepts hydrogen atoms to become NADH during glycolysis and the Krebs cycle. NADH then donates electrons to the ETC to power ATP production.',tag:'NAD⁺'},
+ ],
+ visual:{
+  mindmap:{root:'Cellular Respiration',branches:[
+   {label:'Definition',color:'#f0a030',children:['Releases energy from glucose','Occurs in cytoplasm + mitochondria','Produces ATP']},
+   {label:'Stage 1: Glycolysis',color:'#2de8c8',children:['Cytoplasm','Glucose → 2 Pyruvate','Yields 2 ATP + 2 NADH']},
+   {label:'Stage 2: Krebs Cycle',color:'#a78bfa',children:['Mitochondrial matrix','Releases CO₂','Yields ATP + NADH + FADH₂']},
+   {label:'Stage 3: ETC',color:'#f87171',children:['Inner membrane','34 ATP produced','H₂O formed']},
+   {label:'Anaerobic',color:'#34d399',children:['No oxygen','Lactic acid (animals)','Ethanol + CO₂ (yeast)','Only 2 ATP']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Step 1',text:'Glucose enters cytoplasm'},
+   {type:'process',label:'Step 2',text:'Glycolysis: Glucose → 2 Pyruvate (2 ATP, 2 NADH)'},
+   {type:'decision',label:'Decision',text:'Oxygen available?'},
+   {type:'process',label:'Yes → Step 4',text:'Krebs Cycle in matrix: CO₂ released, NADH + FADH₂ produced'},
+   {type:'process',label:'Step 5',text:'ETC: NADH/FADH₂ → 34 ATP via ATP synthase'},
+   {type:'output',label:'Aerobic Output',text:'38 ATP + CO₂ + H₂O. OR: Anaerobic → 2 ATP + lactic acid/ethanol'},
+  ],
+  graphs:[
+   {title:'ATP Yield: Aerobic vs Anaerobic',type:'bar2',color:'#2de8c8',xLabel:'Type',yLabel:'ATP',
+    desc:'Aerobic: <strong>38 ATP</strong>. Anaerobic: <strong>2 ATP</strong>. Aerobic is ~19× more efficient.',
+    note:'Always state exact ATP yields in exam answers.'},
+  ]
+ }
+},
+{id:'digestion',label:'Human Digestion',icon:'&#127860;',
+ keys:/\b(digest\w+|pepsin|amylase|bile\b|intestin\w+|villi|villus|duodenum|peristalsis|lipase|trypsin|oesophag\w+|esophag\w+|salivary|pancrea\w+|stomach|colon|rectum)\b/i,
+ domain:'biology',
+ examFocus:[
+  {text:'Each <strong>organ and its enzyme</strong>: mouth (salivary amylase), stomach (pepsin + HCl), small intestine (lipase, trypsin, absorption).',tag:'Organs'},
+  {text:'<strong>Enzymes + substrates:</strong> Amylase → starch; Pepsin → protein; Lipase → fats. Know products for each.',tag:'Enzymes'},
+  {text:'<strong>Villi</strong> in small intestine: increase surface area, thin walls, rich blood supply, lacteals for fat absorption.',tag:'Absorption'},
+  {text:'<strong>Peristalsis</strong> = coordinated muscular waves moving food along the gut. Common diagram question.',tag:'Movement'},
+  {text:'Bile (liver → gall bladder) <strong>emulsifies fats</strong> — increases surface area for lipase. Does NOT chemically digest.',tag:'Bile'},
+ ],
+ keyTerms:['digestion','amylase','pepsin','lipase','villi','peristalsis','bile','small intestine','absorption','enzyme','substrate'],
+ qa:[
+  {q:'State the substrate and product for amylase, pepsin, and lipase.',a:'Amylase: starch → glucose. Pepsin: protein → amino acids. Lipase: fats → fatty acids + glycerol.',tag:'Enzymes'},
+  {q:'What is peristalsis and why is it important?',a:'Peristalsis is coordinated muscular contractions that move food along the gut (oesophagus to rectum). It drives digestion without gravity.',tag:'Movement'},
+  {q:'Describe the adaptations of villi for absorption.',a:'Villi have: thin walls (short diffusion distance), rich capillary supply (maintains concentration gradient), lacteals (absorb fats), large surface area (many microvilli).',tag:'Villi'},
+  {q:'What is the role of bile and where is it produced?',a:'Bile is produced in the liver and stored in the gall bladder. It emulsifies fats into small droplets, increasing surface area for lipase to digest them.',tag:'Bile'},
+  {q:'What role does HCl play in the stomach?',a:'HCl creates an acidic pH (~2) that activates pepsin, kills bacteria in food, and denatures proteins to aid digestion.',tag:'Stomach'},
+ ],
+ visual:{
+  mindmap:{root:'Human Digestion',branches:[
+   {label:'Organs (order)',color:'#f0a030',children:['Mouth → Oesophagus','Stomach','Small Intestine','Large Intestine','Rectum & Anus']},
+   {label:'Key Enzymes',color:'#2de8c8',children:['Amylase: starch → glucose','Pepsin: protein → amino acids','Lipase: fat → fatty acids','Trypsin: protein (pancreas)']},
+   {label:'Absorption',color:'#a78bfa',children:['Small intestine: nutrients','Villi increase surface area','Large intestine: water']},
+   {label:'Chemical Helpers',color:'#f87171',children:['HCl: activates pepsin','Bile: emulsifies fat','Mucus: protects stomach']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Mouth',text:'Amylase breaks starch. Teeth mechanically digest food → bolus'},
+   {type:'process',label:'Oesophagus',text:'Peristalsis moves bolus downward'},
+   {type:'process',label:'Stomach',text:'HCl + Pepsin digest proteins → chyme (2–4 hours)'},
+   {type:'process',label:'Small Intestine',text:'Bile emulsifies fat. Lipase + trypsin complete digestion'},
+   {type:'process',label:'Absorption',text:'Villi absorb nutrients: capillaries (glucose, amino acids), lacteals (fats)'},
+   {type:'output',label:'Large Intestine',text:'Water reabsorbed → faeces formed → excreted'},
+  ],
+  graphs:[
+   {title:'Enzyme Activity vs pH',type:'bell',color:'#f0a030',xLabel:'pH →',yLabel:'Activity →',
+    desc:'Each enzyme has an <strong>optimum pH</strong>: Amylase ~pH 7, Pepsin ~pH 2, Trypsin ~pH 8. Activity drops sharply on either side.',
+    note:'Why does pepsin fail in small intestine? → pH too high (pH 8 vs optimum pH 2).'},
+  ]
+ }
+},
+{id:'genetics',label:'Genetics & DNA',icon:'&#129516;',
+ keys:/\b(dna\b|rna\b|gene\b|genes\b|codon|nucleotide|transcription|translation|ribosom\w+|double.helix|allele|dominant|recessive|genotype|phenotype|punnett|heredit\w+|inherit\w+)\b/i,
+ domain:'biology',
+ examFocus:[
+  {text:'<strong>DNA structure:</strong> double helix, antiparallel strands, base pairing A-T and C-G. Sugar-phosphate backbone.',tag:'Structure'},
+  {text:'<strong>Transcription</strong> (nucleus): DNA → mRNA. <strong>Translation</strong> (ribosome): mRNA + tRNA → protein.',tag:'Expression'},
+  {text:'<strong>Punnett squares:</strong> predict offspring genotype ratios. Dominant allele masks recessive.',tag:'Inheritance'},
+  {text:'Mutations: <strong>substitution, deletion, insertion</strong>. Frame-shift mutations (deletion/insertion) are most severe.',tag:'Mutation'},
+  {text:'Sex-linked inheritance: colour blindness gene on X chromosome. Females are carriers; males are affected.',tag:'Sex-linkage'},
+ ],
+ keyTerms:['DNA','RNA','gene','codon','allele','dominant','recessive','transcription','translation','genotype','phenotype','mutation'],
+ qa:[
+  {q:'Describe the base pairing rules in DNA.',a:'Adenine (A) pairs with Thymine (T) via 2 hydrogen bonds. Cytosine (C) pairs with Guanine (G) via 3 hydrogen bonds.',tag:'Base pairing'},
+  {q:'Distinguish between transcription and translation.',a:'Transcription: DNA → mRNA in the nucleus. Translation: mRNA is read at ribosomes; tRNA brings amino acids to build a protein.',tag:'Gene expression'},
+  {q:'A plant is heterozygous tall (Tt). Cross with a short plant (tt). What is the ratio of tall to short offspring?',a:'Punnett square gives 50% Tt (tall) : 50% tt (short). Ratio = 1 tall : 1 short.',tag:'Punnett square'},
+  {q:'Why is a frameshift mutation more damaging than a substitution?',a:'A deletion or insertion shifts the reading frame, changing all downstream codons and producing a completely different (usually non-functional) protein. Substitution only changes one amino acid.',tag:'Mutation'},
+  {q:'Explain why colour blindness is more common in males.',a:'The colour blindness gene is on the X chromosome. Males (XY) only need one recessive allele to be affected. Females (XX) need two recessive alleles, so are usually carriers.',tag:'Sex-linked'},
+ ],
+ visual:{
+  mindmap:{root:'Genetics & DNA',branches:[
+   {label:'DNA Structure',color:'#f0a030',children:['Double helix','A pairs with T','C pairs with G','Antiparallel strands','Sugar-phosphate backbone']},
+   {label:'Gene Expression',color:'#2de8c8',children:['Transcription: DNA → mRNA','In nucleus','Translation: mRNA → protein','At ribosomes','tRNA brings amino acids']},
+   {label:'Inheritance',color:'#a78bfa',children:['Dominant masks recessive','Punnett square for ratios','Genotype: allele combination','Phenotype: visible trait']},
+   {label:'Mutations',color:'#f87171',children:['Substitution: one base changed','Deletion: frameshift','Insertion: frameshift','Can cause disorders']},
+  ]},
+  flowchart:[
+   {type:'start',label:'DNA',text:'DNA in nucleus contains genetic code (base sequence)'},
+   {type:'process',label:'Transcription',text:'DNA unwinds → mRNA copy made by RNA polymerase in nucleus'},
+   {type:'process',label:'mRNA',text:'mRNA travels out of nucleus to ribosome'},
+   {type:'process',label:'Translation',text:'Ribosome reads codons (3 bases = 1 amino acid)'},
+   {type:'output',label:'Protein',text:'tRNA brings amino acids → polypeptide chain formed → folded into protein'},
+  ],
+  graphs:[
+   {title:'Punnett Square: Aa × Aa Cross',type:'punnett',color:'#a78bfa',xLabel:'',yLabel:'',
+    desc:'Crossing two heterozygous parents (Aa × Aa): ratio <strong>1 AA : 2 Aa : 1 aa</strong> (genotype); <strong>3 dominant : 1 recessive</strong> (phenotype).',
+    note:'Always state both genotype AND phenotype ratios in exam answers.'},
+  ]
+ }
+},
+{id:'trig',label:'Trigonometry',icon:'&#128208;',
+ keys:/\b(trigonometry|trigonometric|sohcahtoa|sine.rule|cosine.rule|\bsin\b|\bcos\b|\btan\b|pythagoras|pythagorean|hypotenuse|radian\b|unit.circle|trig.identit\w+)\b/i,
+ domain:'maths',
+ examFocus:[
+  {text:'<strong>SOHCAHTOA:</strong> sin = Opp/Hyp, cos = Adj/Hyp, tan = Opp/Adj. Right-angled triangles only.',tag:'Basics'},
+  {text:'<strong>Key identities:</strong> sin²θ + cos²θ = 1; tanθ = sinθ/cosθ; sin2θ = 2sinθcosθ; cos2θ = cos²θ−sin²θ.',tag:'Identities'},
+  {text:'<strong>Sine rule:</strong> a/sinA = b/sinB. <strong>Cosine rule:</strong> a² = b²+c²−2bc cosA. Use for non-right triangles.',tag:'Rules'},
+  {text:'Exact values: sin30°=½, cos30°=√3/2, sin45°=1/√2, sin60°=√3/2, cos60°=½, tan45°=1.',tag:'Exact values'},
+  {text:'Graphs: period of sinx/cosx = 360°; tanx = 180°. Know transformations: amplitude, period, phase shift.',tag:'Graphs'},
+ ],
+ keyTerms:['sine','cosine','tangent','SOHCAHTOA','Pythagoras','hypotenuse','radian','identity','sine rule','cosine rule','double angle'],
+ qa:[
+  {q:'State SOHCAHTOA and what triangle type it applies to.',a:'sin = Opposite/Hypotenuse, cos = Adjacent/Hypotenuse, tan = Opposite/Adjacent. Applies ONLY to right-angled triangles.',tag:'SOHCAHTOA'},
+  {q:'State the Pythagorean identity.',a:'sin²θ + cos²θ = 1. This holds for all angles θ.',tag:'Identity'},
+  {q:'When do you use the Sine Rule vs the Cosine Rule?',a:'Sine Rule (a/sinA = b/sinB): when you know an angle-side pair. Cosine Rule (a²=b²+c²−2bc cosA): when you know 3 sides, or 2 sides + included angle.',tag:'Rules'},
+  {q:'State the exact values: sin30°, cos60°, tan45°.',a:'sin30° = ½, cos60° = ½, tan45° = 1.',tag:'Exact values'},
+  {q:'What is the period of sin(x) and tan(x)?',a:'sin(x) has period 360°. tan(x) has period 180°. cos(x) also has period 360°.',tag:'Graphs'},
+ ],
+ visual:{
+  mindmap:{root:'Trigonometry',branches:[
+   {label:'Right Triangle',color:'#f0a030',children:['sin = O/H','cos = A/H','tan = O/A','Pythagoras: a²+b²=c²']},
+   {label:'Identities',color:'#2de8c8',children:['sin²θ + cos²θ = 1','tanθ = sinθ/cosθ','sin2θ = 2sinθcosθ','cos2θ = cos²θ−sin²θ']},
+   {label:'Sine & Cosine Rules',color:'#a78bfa',children:['Sine: a/sinA = b/sinB','Cosine: a²=b²+c²−2bc cosA','For non-right triangles']},
+   {label:'Exact Values',color:'#f87171',children:['sin30°=½','cos60°=½','sin45°=1/√2','tan45°=1','sin60°=√3/2']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Step 1',text:'Identify triangle type: right-angled or non-right-angled'},
+   {type:'decision',label:'Right angle?',text:'Right-angled? → Use SOHCAHTOA or Pythagoras'},
+   {type:'process',label:'Non-right',text:'Non-right-angled? → Use Sine Rule or Cosine Rule'},
+   {type:'process',label:'Step 3',text:'Sine rule: know an angle + opposite side. Cosine: know 3 sides or 2 sides + included angle'},
+   {type:'process',label:'Step 4',text:'Substitute values → solve for unknown side or angle'},
+   {type:'output',label:'Check',text:'Use sin²θ + cos²θ = 1 to verify answers where possible'},
+  ],
+  graphs:[
+   {title:'y = sin(x)',type:'sine',color:'#2de8c8',xLabel:'x (degrees) →',yLabel:'sin(x)',
+    desc:'Oscillates between <strong>−1 and +1</strong>. Period = <strong>360°</strong>. Starts at 0, peaks at 90°, zero at 180°, trough at 270°.',
+    note:'y = a·sin(bx+c)+d: amplitude=a, period=360°/b, phase shift=−c/b, vertical shift=d.'},
+   {title:'y = cos(x)',type:'cosine',color:'#a78bfa',xLabel:'x (degrees) →',yLabel:'cos(x)',
+    desc:'Same shape as sin(x) but shifted <strong>90° left</strong>. Starts at (0°,1), crosses zero at 90°, trough at 180°.',
+    note:'cos(x) = sin(x + 90°). They are identical waves with a phase shift.'},
+  ]
+ }
+},
+{id:'calculus',label:'Calculus',icon:'&#8747;',
+ keys:/\b(differentiation|integration\b|calculus\b|derivative\b|chain.rule|product.rule|quotient.rule|turning.point|stationary.point|definite.integral|indefinite.integral)\b/i,
+ domain:'maths',
+ examFocus:[
+  {text:'<strong>Power rule:</strong> d/dx(xⁿ) = nxⁿ⁻¹. Chain rule: dy/dx = dy/du · du/dx.',tag:'Derivatives'},
+  {text:'Set dy/dx = 0 to find <strong>stationary points</strong>. Then d²y/dx²: positive = min, negative = max.',tag:'Applications'},
+  {text:'<strong>Integration:</strong> ∫xⁿ dx = xⁿ⁺¹/(n+1) + c. Always add constant c for indefinite integrals.',tag:'Integration'},
+  {text:'<strong>Definite integral</strong> = area under curve between limits. Negative if curve is below x-axis.',tag:'Area'},
+  {text:'Standard forms: ∫eˣ = eˣ+c; ∫1/x = ln|x|+c; ∫sinx = −cosx+c; ∫cosx = sinx+c.',tag:'Standard forms'},
+ ],
+ keyTerms:['derivative','integration','chain rule','product rule','stationary point','definite integral','dy/dx','d²y/dx²'],
+ qa:[
+  {q:'Differentiate y = 5x³ − 2x + 7.',a:'dy/dx = 15x² − 2. Apply power rule: multiply by power, reduce power by 1. Constant term disappears.',tag:'Power rule'},
+  {q:'How do you find and classify stationary points?',a:'Set dy/dx = 0 and solve for x. Then find d²y/dx²: if positive → minimum, if negative → maximum, if zero → point of inflection (test further).',tag:'Stationary points'},
+  {q:'State the Chain Rule and when to use it.',a:'If y = f(g(x)), then dy/dx = f\'(g(x)) · g\'(x). Use when differentiating composite functions like sin(3x²) or (2x+1)⁵.',tag:'Chain rule'},
+  {q:'What is the difference between definite and indefinite integration?',a:'Indefinite: ∫f(x)dx = F(x) + c (includes constant of integration, no limits). Definite: ∫[a to b]f(x)dx = F(b) − F(a) (gives a number, represents area).',tag:'Integration types'},
+  {q:'Find the area under y = x² between x = 0 and x = 3.',a:'∫₀³ x² dx = [x³/3]₀³ = (27/3) − 0 = 9 square units.',tag:'Definite integral'},
+ ],
+ visual:{
+  mindmap:{root:'Calculus',branches:[
+   {label:'Differentiation',color:'#f0a030',children:['d/dx(xⁿ) = nxⁿ⁻¹','Chain rule: composite functions','Product rule: two functions multiplied','Quotient rule: division','Finds gradient/rate of change']},
+   {label:'Applications',color:'#2de8c8',children:['dy/dx = 0 → stationary point','d²y/dx² > 0 → minimum','d²y/dx² < 0 → maximum','Tangent: y−y₁ = m(x−x₁)']},
+   {label:'Integration',color:'#a78bfa',children:['∫xⁿdx = xⁿ⁺¹/(n+1)+c','Reverse of differentiation','Indefinite: add +c','Definite: area between limits']},
+   {label:'Standard Integrals',color:'#f87171',children:['∫eˣ = eˣ+c','∫1/x = ln|x|+c','∫sinx = −cosx+c','∫cosx = sinx+c']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Gradient?',text:'To find gradient/rate of change → differentiate f(x)'},
+   {type:'process',label:'Apply Rules',text:'Power rule, chain rule, product/quotient rule as needed'},
+   {type:'decision',label:'Stationary?',text:'Set dy/dx = 0 → solve for x → find stationary points'},
+   {type:'process',label:'Classify',text:'Find d²y/dx²: positive = min, negative = max'},
+   {type:'start',label:'Area?',text:'To find area → integrate f(x) between limits a and b'},
+   {type:'output',label:'Integrate',text:'∫[a,b]f(x)dx = F(b) − F(a)'},
+  ],
+  graphs:[
+   {title:'Gradient function f(x) and f\'(x)',type:'diff',color:'#f0a030',xLabel:'x →',yLabel:'y →',
+    desc:'Where f(x) has a <strong>peak or trough</strong>, f\'(x) = 0. Where f(x) increases, f\'(x) > 0. Where f(x) decreases, f\'(x) < 0.',
+    note:'f\'(x) crosses the x-axis at the x-coordinates of all turning points of f(x).'},
+  ]
+ }
+},
+{id:'forces',label:'Forces & Motion',icon:'&#9881;',
+ keys:/\b(newton.s.law\w*|free.body|resultant.force|friction\b|normal.force|torque\b|moment\b|moments\b|spring.constant|hooke|equilibrium\b|momentum\b|impulse\b)\b/i,
+ domain:'physics',
+ examFocus:[
+  {text:'<strong>Newton\'s Laws:</strong> 1st = inertia; 2nd = F = ma; 3rd = equal + opposite reactions on different objects.',tag:'Newton\'s Laws'},
+  {text:'<strong>Free body diagrams:</strong> show ALL forces — weight (down), normal (perpendicular), friction (opposing motion).',tag:'FBDs'},
+  {text:'<strong>Moments:</strong> moment = force × perpendicular distance. Equilibrium: Σ clockwise = Σ anticlockwise.',tag:'Moments'},
+  {text:'<strong>Hooke\'s Law:</strong> F = kx within elastic limit. Spring constant k (N/m). Force-extension graph is linear.',tag:'Hooke'},
+  {text:'Momentum p = mv. Impulse = FΔt = Δp. Conservation: total momentum before = after (no external forces).',tag:'Momentum'},
+ ],
+ keyTerms:['force','Newton\'s laws','friction','moment','weight','Hooke\'s law','equilibrium','momentum','impulse'],
+ qa:[
+  {q:'State Newton\'s Second Law and write the equation.',a:'The acceleration of an object is proportional to the net force and inversely proportional to its mass. F = ma (N = kg·m/s²).',tag:'Newton 2nd'},
+  {q:'What are the conditions for an object to be in equilibrium?',a:'Resultant force = 0 AND resultant moment = 0. This means the object is not accelerating and not rotating.',tag:'Equilibrium'},
+  {q:'A spring has constant k = 200 N/m. What force extends it by 0.05 m?',a:'F = kx = 200 × 0.05 = 10 N. This applies within the elastic limit (Hooke\'s Law region).',tag:'Hooke\'s Law'},
+  {q:'Define the principle of conservation of momentum.',a:'In a closed system with no external forces, the total momentum before a collision equals the total momentum after. p_before = p_after.',tag:'Conservation'},
+  {q:'What is impulse and how does it relate to momentum?',a:'Impulse = F × Δt. Impulse equals the change in momentum (Δp = mv − mu). A larger time reduces the force needed for the same momentum change.',tag:'Impulse'},
+ ],
+ visual:{
+  mindmap:{root:'Forces & Motion',branches:[
+   {label:'Newton\'s Laws',color:'#f0a030',children:['1st: inertia — no net force = constant velocity','2nd: F = ma','3rd: equal + opposite pairs']},
+   {label:'Types of Force',color:'#2de8c8',children:['Weight: W = mg downward','Normal: perpendicular to surface','Friction: opposes motion','Tension: along string/rope']},
+   {label:'Moments',color:'#a78bfa',children:['Moment = F × d (perpendicular)','Clockwise vs anticlockwise','Equilibrium: both equal','Pivot is reference point']},
+   {label:'Momentum',color:'#f87171',children:['p = mv','Impulse = FΔt = Δp','Conserved in closed systems','Elastic: KE conserved']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Step 1',text:'Draw free-body diagram — label ALL forces acting on the object'},
+   {type:'process',label:'Step 2',text:'Calculate resultant force: sum horizontal and vertical components separately'},
+   {type:'process',label:'Step 3',text:'Apply F = ma to find acceleration (or rearrange for force or mass)'},
+   {type:'decision',label:'Equilibrium?',text:'Is resultant force = 0? → Object moves at constant velocity (or is at rest)'},
+   {type:'output',label:'Solve',text:'Use relevant equation: F=ma, F=kx, p=mv, Impulse=FΔt, Moment=Fd'},
+  ],
+  graphs:[
+   {title:'Force vs Extension (Hooke\'s Law)',type:'linear_then_curve',color:'#f0a030',xLabel:'Extension (m) →',yLabel:'Force (N) →',
+    desc:'<strong>Linear region</strong>: F = kx (elastic, Hooke\'s Law). Beyond elastic limit: graph curves — permanent deformation occurs.',
+    note:'Gradient of linear section = spring constant k (N/m). Remember this for exam graph questions.'},
+  ]
+ }
+},
+{id:'electricity',label:'Electricity & Circuits',icon:'&#9889;',
+ keys:/\b(ohm.s.law|circuit\b|voltage\b|current\b|resistance\b|resistor\b|capacitor\b|series.circuit|parallel.circuit|kirchhoff|internal.resistance|emf\b|voltmeter|ammeter)\b/i,
+ domain:'physics',
+ examFocus:[
+  {text:'<strong>Ohm\'s Law: V = IR.</strong> Power: P = IV = I²R = V²/R. Always check units (V, A, Ω, W).',tag:'Ohm\'s law'},
+  {text:'<strong>Series:</strong> Rₜ = R₁+R₂; same current through all. <strong>Parallel:</strong> 1/Rₜ = 1/R₁+1/R₂; same voltage across each.',tag:'Circuits'},
+  {text:'<strong>Kirchhoff\'s Laws:</strong> 1st = Σ currents in = Σ out at junction. 2nd = Σ EMF = Σ voltage drops around loop.',tag:'Kirchhoff'},
+  {text:'Internal resistance: terminal voltage = EMF − Ir. V-I graph gradient = −r (internal resistance).',tag:'Internal r'},
+  {text:'Capacitor: Q = CV. Energy = ½CV². In parallel: total C adds. In series: total 1/C adds.',tag:'Capacitors'},
+ ],
+ keyTerms:['voltage','current','resistance','Ohm\'s law','series','parallel','power','Kirchhoff','EMF','capacitor'],
+ qa:[
+  {q:'A resistor has 12 V across it and carries 0.3 A. Calculate its resistance and power.',a:'R = V/I = 12/0.3 = 40 Ω. Power P = IV = 0.3 × 12 = 3.6 W.',tag:'Ohm\'s Law'},
+  {q:'How does total resistance differ in series vs parallel circuits?',a:'Series: Rₜ = R₁ + R₂ (total increases). Parallel: 1/Rₜ = 1/R₁ + 1/R₂ (total is LESS than smallest individual resistance).',tag:'Circuits'},
+  {q:'State Kirchhoff\'s First Law.',a:'The sum of currents entering a junction equals the sum leaving it. ΣI_in = ΣI_out. Based on conservation of charge.',tag:'Kirchhoff 1st'},
+  {q:'A battery has EMF = 9 V and internal resistance r = 1.5 Ω. What is the terminal voltage when current = 2 A?',a:'V = EMF − Ir = 9 − (2 × 1.5) = 9 − 3 = 6 V.',tag:'Internal resistance'},
+  {q:'What does a steeper gradient mean on a V-I graph?',a:'A steeper gradient means higher resistance (R = V/I = gradient). An ohmic conductor has a straight line through the origin.',tag:'Graphs'},
+ ],
+ visual:{
+  mindmap:{root:'Electricity',branches:[
+   {label:'Core Equations',color:'#f0a030',children:['V = IR (Ohm\'s Law)','P = IV = I²R = V²/R','Q = It (charge)']},
+   {label:'Series Circuit',color:'#2de8c8',children:['Same current throughout','Voltages add: V = V₁+V₂','R_total = R₁+R₂']},
+   {label:'Parallel Circuit',color:'#a78bfa',children:['Same voltage across branches','Currents add: I = I₁+I₂','1/R_t = 1/R₁+1/R₂']},
+   {label:'Kirchhoff\'s Laws',color:'#f87171',children:['1st: ΣI_in = ΣI_out (junction)','2nd: ΣEMF = ΣIR (loop)']},
+  ]},
+  flowchart:[
+   {type:'start',label:'Step 1',text:'Identify circuit type: series, parallel, or combination'},
+   {type:'process',label:'Step 2',text:'Calculate total resistance using appropriate series/parallel rule'},
+   {type:'process',label:'Step 3',text:'Find total current: I = V/R (Ohm\'s Law)'},
+   {type:'process',label:'Step 4',text:'Apply Kirchhoff\'s laws to find branch currents and voltages'},
+   {type:'output',label:'Power',text:'Calculate power dissipated: P = IV = I²R = V²/R'},
+  ],
+  graphs:[
+   {title:'V-I Graph: Ohmic vs Non-Ohmic',type:'linear_vs_curve',color:'#f0a030',xLabel:'Current (A) →',yLabel:'Voltage (V) →',
+    desc:'<strong>Ohmic conductor</strong> (resistor): straight line through origin, constant resistance. <strong>Filament bulb</strong>: curves as resistance increases with temperature.',
+    note:'Gradient = resistance. Non-linear graph means resistance is changing.'},
+  ]
+ }
+},
+]; // end KB
+
+/* ═══════════════════════════════════════════════════════
+   CRASH PACKS
+═══════════════════════════════════════════════════════ */
+const CRASH={
+ photosynthesis:{title:'Photosynthesis Crash Course',formula:'6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂',
+  items:['<strong>Overall equation:</strong> 6CO₂ + 6H₂O + light → C₆H₁₂O₆ + 6O₂ (memorise both word and symbol forms)',
+   '<strong>Light-dependent reactions</strong> in thylakoid membrane: produce ATP, NADPH, O₂ from photolysis of water',
+   '<strong>Calvin Cycle</strong> in stroma: CO₂ fixed by RuBisCO using ATP + NADPH → glucose',
+   'Limiting factors: light intensity, CO₂ concentration, temperature — each gives a plateau graph',
+   'Chlorophyll absorbs red + blue light; reflects green']},
+ respiration:{title:'Cellular Respiration Crash Course',formula:'C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 38 ATP',
+  items:['<strong>Aerobic:</strong> 38 ATP. <strong>Anaerobic:</strong> 2 ATP only',
+   '<strong>Glycolysis</strong> (cytoplasm): glucose → 2 pyruvate + 2 ATP + 2 NADH',
+   '<strong>Krebs Cycle</strong> (matrix): releases CO₂, produces NADH, FADH₂, 2 ATP',
+   '<strong>ETC</strong> (inner membrane): NADH/FADH₂ → 34 ATP via ATP synthase',
+   'Anaerobic in animals: lactic acid. In yeast: ethanol + CO₂']},
+ digestion:{title:'Digestion Crash Course',formula:'Starch→Glucose | Protein→Amino acids | Fat→Fatty acids+Glycerol',
+  items:['Pathway: Mouth → Oesophagus → Stomach → Small Intestine → Large Intestine',
+   '<strong>Enzymes:</strong> Amylase (starch), Pepsin (protein, pH~2), Lipase (fat)',
+   'Villi increase surface area in small intestine for absorption',
+   'Large intestine absorbs water; bile emulsifies (does not digest) fats',
+   'HCl in stomach activates pepsin and kills bacteria']},
+ genetics:{title:'Genetics Crash Course',formula:'A pairs T | C pairs G | Codon (3 bases) → 1 amino acid',
+  items:['DNA = double helix; base pairs: <strong>A-T</strong> and <strong>C-G</strong>',
+   'Transcription: DNA → mRNA (nucleus). Translation: mRNA → protein (ribosome)',
+   'Dominant allele masks recessive; Punnett square gives ratios',
+   'Mutations: substitution (mild) or deletion/insertion (frameshift — most severe)',
+   'X-linked: females are carriers (X^A X^a); males are affected (X^a Y)']},
+ trig:{title:'Trigonometry Crash Course',formula:'sin²θ+cos²θ=1 | a/sinA=b/sinB | a²=b²+c²−2bc cosA',
+  items:['<strong>SOHCAHTOA:</strong> sin=O/H, cos=A/H, tan=O/A — right-angled triangles only',
+   'Exact values: sin30°=½, cos60°=½, sin45°=1/√2, tan45°=1, sin60°=√3/2',
+   '<strong>Sine rule:</strong> a/sinA = b/sinB. <strong>Cosine rule:</strong> a²=b²+c²−2bc cosA',
+   'Identities: sin²θ+cos²θ=1; tanθ=sinθ/cosθ; sin2θ=2sinθcosθ',
+   'Period: sin and cos → 360°; tan → 180°']},
+ calculus:{title:'Calculus Crash Course',formula:'dy/dx(xⁿ)=nxⁿ⁻¹ | ∫xⁿdx=xⁿ⁺¹/(n+1)+c',
+  items:['<strong>Differentiation:</strong> d/dx(xⁿ) = nxⁿ⁻¹. Finds gradient and rate of change',
+   'Turning points: set dy/dx = 0. Classify: d²y/dx² > 0 (min), < 0 (max)',
+   '<strong>Integration</strong> = reverse differentiation. Add +c for indefinite integrals',
+   'Definite integral = area under curve between two limits',
+   'Standards: ∫eˣ=eˣ+c; ∫1/x=ln|x|+c; ∫sinx=−cosx+c; ∫cosx=sinx+c']},
+ electricity:{title:'Electricity Crash Course',formula:'V=IR | P=IV | Q=CV | V_terminal=EMF−Ir',
+  items:['<strong>V = IR</strong> (Ohm\'s Law). Power: P = IV = I²R = V²/R',
+   'Series: R_total = R₁+R₂; same current. Parallel: 1/R_t = 1/R₁+1/R₂; same voltage',
+   'Kirchhoff 1st: ΣI_in = ΣI_out. 2nd: ΣEMF = ΣIR around loop',
+   'Capacitor: Q = CV. Energy = ½CV².',
+   'Internal resistance: V_terminal = EMF − Ir; gradient of V-I graph = −r']},
+ forces:{title:'Forces & Mechanics Crash Course',formula:'F=ma | W=mg | F=kx | p=mv | Impulse=FΔt',
+  items:['<strong>Newton\'s 2nd Law:</strong> F = ma. Always draw free-body diagram first',
+   'Weight = mg. Inclined plane: component down slope = mg sinθ, normal = mg cosθ',
+   '<strong>Hooke\'s Law:</strong> F = kx (within elastic limit). k = spring constant (N/m)',
+   'Moments: M = F × d_perp. Equilibrium: Σclockwise = Σanticlockwise moments',
+   'Momentum p = mv. Impulse = Ft = Δp. Conserved in all collisions']},
+};
+
+/* ═══════════════════════════════════════════════════════
+   STOP WORDS + TEXT UTILITIES
+═══════════════════════════════════════════════════════ */
+const STOPS=new Set(['the','and','for','are','but','not','you','all','any','can','had','her','was','one','our','out',
+ 'day','get','has','him','his','how','its','may','new','now','old','see','two','way','who','did','let','put','say',
+ 'she','too','use','that','this','with','have','from','they','know','want','been','good','much','some','time','very',
+ 'when','come','here','just','like','long','make','many','more','only','over','such','take','than','them','well',
+ 'were','will','also','into','most','these','those','then','what','each','which','their','there','about','would',
+ 'other','could','should','might','does','upon','even','both','while','after','before','since','until','where',
+ 'every','another','called','using','used','made','thus','hence','occur','occurs','involve','involves',
+ 'include','includes','found','form','forms','produce','produces']);
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escRe(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+function stripTags(s){return s.replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();}
+function capitalise(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function addStop(s){const t=s.trimEnd();return t&&!/[.!?:;,]/.test(t.slice(-1))?t+'.':t;}
+function polish(s){return addStop(capitalise(s.replace(/^[\s\-\u2022\*\u25B6\u2192]+/,'').trim()));}
+const ABBREV=/\b(Mr|Mrs|Ms|Dr|Prof|Sr|Jr|vs|etc|eg|ie|approx|max|min|no|vol|ch|fig|dept)\.\s*$/i;
+function splitSentences(text){
+ const out=[];let buf='';
+ for(let i=0;i<text.length;i++){
+  buf+=text[i];
+  if(/[.!?]/.test(text[i])){
+   const nxt=text[i+1]||'';const nn=text[i+2]||'';
+   if(nxt===''||(nxt===' '&&/[A-Z\d]/.test(nn))){
+    if(!ABBREV.test(buf)){out.push(buf.trim());buf='';i++;}
+   }
+  }
+ }
+ if(buf.trim())out.push(buf.trim());
+ return out.filter(s=>s.trim().length>8&&s.split(/\s+/).length>=3);
+}
+function chunkLong(s){
+ if(s.length<=120)return[s];
+ const pats=[/;\s+/,/,\s+(and|but|while|because|although|however|therefore|whereas)\s+/i,/\s+(which|where|who)\s+/i];
+ for(const p of pats){
+  const parts=s.split(p).map(x=>x.trim()).filter(x=>x.length>10);
+  if(parts.length>1)return parts.map(polish);
+ }
+ const m=s.lastIndexOf(' ',110);
+ if(m>55)return[polish(s.slice(0,m)),polish(s.slice(m+1))];
+ return[s];
+}
+function boldify(s,terms){
+ let o=esc(s);
+ o=o.replace(/\b([A-Z][a-z]?\d+[A-Za-z\d]*)\b/g,'<code>$1</code>');
+ (terms||[]).forEach(t=>{const re=new RegExp('\\b('+escRe(t)+')\\b','gi');o=o.replace(re,'<strong>$1</strong>');});
+ o=o.replace(/(?<![="])\b([A-Z]{2,})\b(?![^<]*>)/g,'<strong>$1</strong>');
+ return o;
+}
+function isDefinition(s){return/\b(is defined as|refers to|is the process|is a measure|is an?\s|can be defined)\b/i.test(s)&&s.length<220;}
+function wordFreq(text){
+ const f={};(text.match(/\b[a-zA-Z]{3,}\b/g)||[]).forEach(w=>{const k=w.toLowerCase();f[k]=(f[k]||0)+1;});return f;
+}
+function buildKeyTerms(freq,topicTerms){
+ const s=new Set();
+ if(topicTerms)topicTerms.forEach(t=>{if(freq[t.toLowerCase()])s.add(t.toLowerCase());});
+ Object.entries(freq).filter(([w,c])=>c>=2&&w.length>=4&&!STOPS.has(w)).forEach(([w])=>s.add(w));
+ return[...s].sort().slice(0,18);
+}
+function detectTopics(text){
+ const found=[];
+ KB.forEach(e=>{if(e.keys.test(text))found.push(e);});
+ // Domain contamination filter
+ const domains=new Set(found.map(e=>e.domain));
+ if(domains.size>1){
+  const ds={};found.forEach(e=>{const m=(text.match(e.keys)||[]).length;ds[e.domain]=(ds[e.domain]||0)+m;});
+  const top=Object.entries(ds).sort((a,b)=>b[1]-a[1]).slice(0,2).map(d=>d[0]);
+  return found.filter(e=>top.includes(e.domain));
+ }
+ return found;
+}
+function isCrashMode(text){
+ const w=text.trim().split(/\s+/).length;
+ const r=/\b(need to study|study\s+\w+|revise|revision|help with|what is|explain\s+\w+|crash course|quick notes)\b/i.test(text);
+ return w<55||r;
+}
+function cleanRaw(t){
+ t=t.replace(/\r\n/g,'\n').replace(/\r/g,'\n').replace(/\n{3,}/g,'\n\n')
+   .replace(/[ \t]+/g,' ').replace(/,([^\s\n])/g,', $1').replace(/([.!?])([A-Za-z])/g,'$1 $2');
+ t=t.split('\n').map(l=>l.trim()).join('\n');return t.trim();
+}
+
+/* ═══════════════════════════════════════════════════════
+   NOTES BUILDER
+═══════════════════════════════════════════════════════ */
+function buildNoteSections(paras,topics,freq){
+ const usedTopics=new Set();const sections=[];let totalBullets=0;
+ paras.forEach(para=>{
+  const p=para.trim();if(!p)return;
+  const isHead=/:\s*$/.test(p)||(/^[A-Z][A-Z\s\d&\/\-]{3,39}$/.test(p))||(p.length<=55&&!/[.!?]/.test(p.slice(0,-1))&&/^[A-Z]/.test(p)&&p.split(' ').length<=6);
+  if(isHead&&splitSentences(p).length<=1){sections.push({heading:p.replace(/[:.]\s*$/,'').trim(),bullets:[]});return;}
+  const rawS=splitSentences(p);if(!rawS.length)return;
+  const sentences=rawS.flatMap(s=>chunkLong(s)).map(polish).filter(s=>s&&s.split(' ').length>=3);
+  if(!sentences.length)return;
+  let matchEntry=null;
+  for(const entry of topics){
+   if(entry.keys.test(p)&&!usedTopics.has(entry.id)){matchEntry=entry;usedTopics.add(entry.id);break;}
+   else if(entry.keys.test(p)&&usedTopics.has(entry.id)){
+    const ex=sections.slice().reverse().find(s=>s.topicId===entry.id);
+    if(ex){sentences.forEach(s=>{ex.bullets.push({html:boldify(s,entry.keyTerms||[]),isDef:isDefinition(s)});totalBullets++;});return;}
+   }
+  }
+  const bullets=sentences.map(s=>({html:boldify(s,matchEntry?matchEntry.keyTerms||[]:[]),isDef:isDefinition(s)}));
+  totalBullets+=bullets.length;
+  const last=sections[sections.length-1];
+  if(last&&last.bullets.length===0&&!matchEntry)last.bullets.push(...bullets);
+  else sections.push({heading:matchEntry?matchEntry.label:null,icon:matchEntry?matchEntry.icon:null,topicId:matchEntry?matchEntry.id:null,bullets});
+ });
+ return{sections,totalBullets};
+}
+
+/* ═══════════════════════════════════════════════════════
+   VISUAL SVG RENDERERS
+═══════════════════════════════════════════════════════ */
+function renderMindMap(data){
+ if(!data||!data.branches)return'<p style="color:var(--mu);font-size:.85rem">No mind map available.</p>';
+ const W=760,H=Math.max(340,data.branches.length*90+140);const cx=W/2,cy=H/2;
+ let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px">`;
+ svg+=`<circle cx="${cx}" cy="${cy}" r="40" fill="rgba(240,160,48,.15)" stroke="#f0a030" stroke-width="2"/>`;
+ const rw=data.root.split(' ');
+ if(rw.length<=2)svg+=`<text x="${cx}" y="${cy+5}" text-anchor="middle" fill="#fff" font-family="Palatino,Georgia,serif" font-size="13" font-weight="600">${data.root}</text>`;
+ else{svg+=`<text x="${cx}" y="${cy-4}" text-anchor="middle" fill="#fff" font-family="Palatino,Georgia,serif" font-size="12" font-weight="600">${rw.slice(0,2).join(' ')}</text>`;
+  svg+=`<text x="${cx}" y="${cy+11}" text-anchor="middle" fill="#fff" font-family="Palatino,Georgia,serif" font-size="12" font-weight="600">${rw.slice(2).join(' ')}</text>`;}
+ const nb=data.branches.length;
+ const left=data.branches.slice(0,Math.ceil(nb/2));
+ const right=data.branches.slice(Math.ceil(nb/2));
+ function placeBranch(b,side,idx,total){
+  const bx=side==='left'?165:W-165;const by=(H/(total+1))*(idx+1);const col=b.color||'#a78bfa';
+  svg+=`<line x1="${cx}" y1="${cy}" x2="${bx}" y2="${by}" stroke="${col}" stroke-width="1.5" stroke-opacity=".45" stroke-dasharray="4 2"/>`;
+  svg+=`<ellipse cx="${bx}" cy="${by}" rx="62" ry="16" fill="${col}22" stroke="${col}" stroke-width="1.5"/>`;
+  const sl=b.label.length>18?b.label.slice(0,17)+'…':b.label;
+  svg+=`<text x="${bx}" y="${by+5}" text-anchor="middle" fill="${col}" font-family="Trebuchet MS,sans-serif" font-size="10.5" font-weight="700">${sl}</text>`;
+  const ch=b.children||[];const chSpread=40;const chY=by-(ch.length-1)*chSpread/2;
+  ch.forEach((c,ci)=>{
+   const chx=side==='left'?bx-138:bx+138;const chy=chY+ci*chSpread;
+   svg+=`<line x1="${bx}" y1="${by}" x2="${chx}" y2="${chy}" stroke="${col}" stroke-width="1" stroke-opacity=".32"/>`;
+   svg+=`<circle cx="${chx}" cy="${chy}" r="16" fill="${col}18" stroke="${col}" stroke-width="1" stroke-opacity=".55"/>`;
+   const sc=c.length>16?c.slice(0,15)+'…':c;
+   svg+=`<text x="${chx}" y="${chy+4}" text-anchor="middle" fill="#b0bbd0" font-family="Trebuchet MS,sans-serif" font-size="8.5">${sc}</text>`;
+  });
+ }
+ left.forEach((b,i)=>placeBranch(b,'left',i,left.length));
+ right.forEach((b,i)=>placeBranch(b,'right',i,right.length));
+ svg+='</svg>';
+ return`<div class="mm-wrap">${svg}</div>`;
+}
+function renderFlowchart(steps){
+ if(!steps||!steps.length)return'<p style="color:var(--mu);font-size:.85rem">No flowchart available.</p>';
+ let h='<div class="fc-wrap"><div class="fc-inner">';
+ steps.forEach((s,i)=>{
+  const tc=s.type==='decision'?'decision':s.type==='output'?'output':'';
+  h+=`<div class="fc-box ${tc}" style="animation-delay:${i*50}ms"><span class="step-lbl">${s.label}</span><span>${s.text}</span></div>`;
+  if(i<steps.length-1)h+=`<div class="fc-arrow"></div>`;
+ });
+ h+='</div></div>';return h;
+}
+function graphSVG(g){
+ const W=220,H=140,pad={t:16,r:14,b:28,l:40};
+ const iw=W-pad.l-pad.r,ih=H-pad.t-pad.b;const col=g.color||'#60a5fa';
+ let path='',extra='';
+ const P=(x,y)=>({x:pad.l+x,y:pad.t+y});
+ if(g.type==='plateau')path=`M0,${ih} Q${iw*.3},${ih} ${iw*.33},${ih*.14} L${iw},${ih*.1}`;
+ else if(g.type==='bell')path=`M0,${ih} Q${iw*.15},${ih} ${iw*.45},${ih*.07} Q${iw*.78},${ih*-.05} ${iw},${ih}`;
+ else if(g.type==='linear')path=`M0,${ih} L${iw},0`;
+ else if(g.type==='curve')path=`M0,${ih} Q${iw*.4},${ih*.8} ${iw*.7},${ih*.3} T${iw},0`;
+ else if(g.type==='sine')path=`M0,${ih/2} Q${iw*.12},0 ${iw*.25},${ih/2} Q${iw*.38},${ih} ${iw*.5},${ih/2} Q${iw*.62},0 ${iw*.75},${ih/2} Q${iw*.88},${ih} ${iw},${ih/2}`;
+ else if(g.type==='cosine')path=`M0,0 Q${iw*.12},${ih/2} ${iw*.25},${ih} Q${iw*.38},${ih/2} ${iw*.5},0 Q${iw*.62},${ih/2} ${iw*.75},${ih} Q${iw*.88},${ih/2} ${iw},0`;
+ else if(g.type==='diff')path=`M0,${ih*.3} Q${iw*.2},${ih*.05} ${iw*.4},${ih*.3} Q${iw*.6},${ih*.55} ${iw*.8},${ih*.3} T${iw},${ih*.15}`;
+ else if(g.type==='linear_then_curve')path=`M0,${ih} L${iw*.55},${ih*.35} Q${iw*.7},${ih*.22} ${iw*.8},${ih*.28} Q${iw*.92},${ih*.35} ${iw},${ih*.5}`;
+ else if(g.type==='linear_vs_curve'){path=`M0,${ih} L${iw},0`;extra=`<path d="M0,${ih} Q${iw*.5},${ih*.6} ${iw},0" fill="none" stroke="rgba(248,113,113,.6)" stroke-width="1.5" stroke-dasharray="3 2" transform="translate(${pad.l},${pad.t})"/>`;}
+ else if(g.type==='bar2'){path=null;extra=`<rect x="${pad.l+iw*.1}" y="${pad.t+ih*.02}" width="${iw*.25}" height="${ih*.98}" fill="${col}55" stroke="${col}" stroke-width="1.5" rx="2"/><rect x="${pad.l+iw*.55}" y="${pad.t+ih*.5}" width="${iw*.25}" height="${ih*.5}" fill="rgba(248,113,113,.4)" stroke="#f87171" stroke-width="1.5" rx="2"/><text x="${pad.l+iw*.225}" y="${pad.t-3}" text-anchor="middle" fill="${col}" font-size="7.5" font-family="monospace">Aerobic</text><text x="${pad.l+iw*.675}" y="${pad.t+ih*.47}" text-anchor="middle" fill="#f87171" font-size="7.5" font-family="monospace">Anaerobic</text>`;}
+ else if(g.type==='punnett'){path=null;const bx=pad.l+iw*.1,by=pad.t+ih*.05,bw=iw*.8,bh=ih*.9;extra=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="none" stroke="${col}" stroke-width="1" stroke-opacity=".5" rx="3"/><line x1="${bx+bw/2}" y1="${by}" x2="${bx+bw/2}" y2="${by+bh}" stroke="${col}" stroke-width="1" stroke-opacity=".35"/><line x1="${bx}" y1="${by+bh/2}" x2="${bx+bw}" y2="${by+bh/2}" stroke="${col}" stroke-width="1" stroke-opacity=".35"/><text x="${bx+bw*.25}" y="${by+bh*.3}" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace">AA</text><text x="${bx+bw*.75}" y="${by+bh*.3}" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace">Aa</text><text x="${bx+bw*.25}" y="${by+bh*.75}" text-anchor="middle" fill="#fff" font-size="11" font-family="monospace">Aa</text><text x="${bx+bw*.75}" y="${by+bh*.75}" text-anchor="middle" fill="#b0bbd0" font-size="11" font-family="monospace">aa</text>`;}
+ else path=`M0,${ih} Q${iw*.5},${ih*.1} ${iw},${ih*.3}`;
+ const ap=path?`<path d="${path} L${iw},${ih} L0,${ih} Z" fill="${col}" fill-opacity=".07" transform="translate(${pad.l},${pad.t})"/>`:'';
+ const mp=path?`<path d="${path}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linecap="round" transform="translate(${pad.l},${pad.t})"/>`:'';
+ return`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+ <line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+ih}" stroke="rgba(255,255,255,.18)" stroke-width="1.2"/>
+ <line x1="${pad.l}" y1="${pad.t+ih}" x2="${pad.l+iw}" y2="${pad.t+ih}" stroke="rgba(255,255,255,.18)" stroke-width="1.2"/>
+ <text x="${pad.l+iw/2}" y="${H-5}" text-anchor="middle" fill="rgba(255,255,255,.38)" font-size="7.5" font-family="monospace">${g.xLabel||''}</text>
+ <text x="9" y="${pad.t+ih/2}" text-anchor="middle" fill="rgba(255,255,255,.38)" font-size="7" font-family="monospace" transform="rotate(-90,9,${pad.t+ih/2})">${g.yLabel||''}</text>
+ ${ap}${mp}${extra}
+</svg>`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HTML BUILDER HELPERS
+═══════════════════════════════════════════════════════ */
+function sHead(ico,label,color){return`<div class="out-head"><span class="ico ${color}">${ico}</span>${label}</div>`;}
+function bList(items,dotColor){
+ let h='<ul class="blist">';
+ items.forEach((b,i)=>{
+  const delay=`animation-delay:${i*26}ms`;
+  const isDef=typeof b==='object'?b.isDef:false;
+  const txt=typeof b==='object'?b.html:boldify(b,[]);
+  h+=`<li style="${delay}">${isDef?'<span class="def-badge">DEF</span>':`<span class="dot ${dotColor}"></span>`}<span class="tx">${txt}</span></li>`;
+ });
+ return h+'</ul>';
+}
+function eCards(items){
+ let h='<div class="exam-grid">';
+ items.forEach((item,i)=>{
+  h+=`<div class="exam-card" style="animation-delay:${i*42}ms"><div class="exam-num">${i+1}</div><div><div class="exam-txt">${item.text}</div><span class="exam-tag">${item.tag}</span></div></div>`;
+ });
+ return h+'</div>';
+}
+function termPills(terms){
+ if(!terms.length)return'';
+ const c=['amber','teal','sky'];
+ return'<div class="terms-grid">'+terms.map((t,i)=>`<span class="tp ${c[i%3]}">${esc(t)}</span>`).join('')+'</div>';
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN PROCESS
+═══════════════════════════════════════════════════════ */
+const TIPS=[
+ {icon:'&#9889;',label:'Active Recall',text:'After reading, close your notes and write out what you remember. The retrieval effort is what builds long-term memory.'},
+ {icon:'&#128197;',label:'Spaced Repetition',text:'Review today, then 1 day, 3 days, 7 days, 14 days later. Each review just before you forget strengthens retention.'},
+ {icon:'&#127919;',label:'Past Papers',text:'The most exam-efficient revision: attempt real past questions. They show exactly where marks are dropped.'},
+ {icon:'&#128161;',label:'Feynman Method',text:'Explain the topic out loud in simple language as if teaching someone. Gaps in explanation = gaps in understanding.'},
+];
+
+function process(rawInput){
+ const cleaned=cleanRaw(rawInput);
+ const topics=detectTopics(cleaned);
+ const freq=wordFreq(cleaned);
+ const crashMode=isCrashMode(cleaned);
+ const primaryTopic=topics[0]||null;
+ const allKeyTerms=buildKeyTerms(freq,primaryTopic?primaryTopic.keyTerms:[]);
+
+ let paras=[];let buf=[];
+ cleaned.split('\n').forEach(line=>{
+  if(line.trim()===''){if(buf.length){paras.push(buf.join(' '));buf=[];}}else{buf.push(line);}
+ });
+ if(buf.length)paras.push(buf.join(' '));
+ if(paras.length<=1){
+  const sents=splitSentences(paras[0]||'');paras=[];
+  for(let i=0;i<sents.length;i+=3)paras.push(sents.slice(i,i+3).join(' '));
+ }
+
+ // Build all data stores
+ const{sections,totalBullets}=buildNoteSections(paras,topics,freq);
+ const examItems=primaryTopic?primaryTopic.examFocus:[
+  {text:'Use <strong>active recall</strong>: write key points without looking at notes, then check.',tag:'Method'},
+  {text:'<strong>Spaced repetition</strong>: review today, then 1, 3, 7, 14 days later.',tag:'Memory'},
+  {text:'Attempt <strong>past paper questions</strong> under timed conditions to identify weak areas.',tag:'Exam prep'},
+  {text:'Build a one-page summary: being forced to condense is one of the best study techniques.',tag:'Synthesis'},
+ ];
+ const qaItems=primaryTopic?primaryTopic.qa:examItems.map((ef,i)=>({q:`Explain: ${ef.tag} in this topic.`,a:stripTags(ef.text),tag:ef.tag}));
+ const flowSteps=primaryTopic&&primaryTopic.visual&&primaryTopic.visual.flowchart?primaryTopic.visual.flowchart:
+  sections.flatMap(s=>s.bullets||[]).slice(0,7).map((b,i)=>({type:'process',label:`Step ${i+1}`,text:stripTags(b.html)}));
+ const branches=primaryTopic&&primaryTopic.visual&&primaryTopic.visual.mindmap?primaryTopic.visual.mindmap.branches:
+  sections.filter(s=>s.heading&&s.bullets.length).map(s=>({label:s.heading,color:'#f0a030',children:s.bullets.slice(0,4).map(b=>stripTags(b.html).slice(0,60))}));
+ const pack=primaryTopic?CRASH[primaryTopic.id]:null;
+ const tip=TIPS[Math.floor(Math.random()*TIPS.length)];
+
+ return{
+  sections,totalBullets,examItems,qaItems,flowSteps,branches,allKeyTerms,
+  topics,primaryTopic,crashMode,pack,tip,
+  topicNames:topics.map(t=>t.label).join(', ')||'General notes',
+  topicCount:topics.length,
+ };
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER ALL TABS
+═══════════════════════════════════════════════════════ */
+function renderAll(r){
+ renderNotes(r);
+ renderExam(r);
+ renderVisual(r);
+ buildAudioScript(r);
+ renderInteractive(r);
+}
+
+function topicBanner(r){
+ if(r.primaryTopic){
+  return`<div class="topic-banner"><div class="topic-icon-big">${r.primaryTopic.icon}</div><div><div class="topic-title">${r.primaryTopic.label}</div><div class="topic-sub">Detected topic</div></div></div>`;
+ }
+ return`<div class="topic-banner" style="background:linear-gradient(135deg,rgba(96,165,250,.08),rgba(96,165,250,.03));border-color:rgba(96,165,250,.2)"><div class="topic-icon-big">&#128203;</div><div><div class="topic-title">Study Notes</div><div class="topic-sub">General notes structured</div></div></div>`;
+}
+
+/* ─── NOTES TAB ─── */
+function renderNotes(r){
+ let h=topicBanner(r);
+ if(r.crashMode&&r.pack){
+  h+=`<div class="crash-banner"><span>&#9889;</span><div><strong>Crash Course Mode</strong> &mdash; Short input. Revision guide generated.</div></div>`;
+  h+=`<div class="formula-bar"><span class="fb-lbl">Key Formula</span>${esc(r.pack.formula)}</div>`;
+  h+=sHead('&#9889;','Quick Revision Guide','rose');
+  h+=bList(r.pack.items.map(t=>({html:t,isDef:false})),'rose');
+ } else if(r.sections.length){
+  h+=sHead('&#128203;','Structured Notes','amber');
+  r.sections.forEach((sec,si)=>{
+   if(si>0)h+='<hr class="sdiv">';
+   if(sec.heading)h+=`<div class="n-head">${sec.icon?sec.icon+' ':''}${esc(sec.heading)}</div>`;
+   if(sec.bullets.length)h+=bList(sec.bullets,'amber');
+  });
+ } else {
+  h+=`<div class="empty-state"><div class="es-icon">&#128221;</div><p>No structured notes could be extracted. Try adding more detail to your input.</p></div>`;
+ }
+ if(r.allKeyTerms.length){h+=`<hr class="sdiv">${sHead('&#128273;','Key Terms','teal')}${termPills(r.allKeyTerms)}`;}
+ h+=`<hr class="sdiv"><div class="study-tip"><span class="st-icon">${r.tip.icon}</span><div><div class="st-label">${r.tip.label}</div><div class="st-text">${r.tip.text}</div></div></div>`;
+ document.getElementById('notes-content').innerHTML=h;
+}
+
+/* ─── EXAM FOCUS TAB ─── */
+function renderExam(r){
+ let h=topicBanner(r);
+ h+=sHead('&#127919;','Exam Focus &mdash; What Examiners Look For','violet');
+ if(r.topics.length>1){
+  r.topics.slice(0,3).forEach((topic,ti)=>{
+   if(ti>0)h+='<div style="margin-top:.9rem"></div>';
+   h+=`<div style="font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mu);margin-bottom:.5rem;">${topic.icon} ${esc(topic.label)}</div>`;
+   h+=eCards(topic.examFocus);
+  });
+ } else {
+  h+=eCards(r.examItems);
+ }
+ if(r.allKeyTerms.length){h+=`<hr class="sdiv">${sHead('&#128273;','Key Terms','teal')}${termPills(r.allKeyTerms)}`;}
+ document.getElementById('exam-content').innerHTML=h;
+}
+
+/* ─── VISUAL TAB ─── */
+function renderVisual(r){
+ const v=r.primaryTopic&&r.primaryTopic.visual?r.primaryTopic.visual:null;
+ let h=topicBanner(r);
+ if(!v&&!r.branches.length){
+  h+=`<div class="empty-state"><div class="es-icon">&#127757;</div><p>No visual data for this topic. Try a more specific topic like "photosynthesis", "trigonometry", or "electricity".</p></div>`;
+  document.getElementById('visual-content').innerHTML=h;return;
+ }
+ const hasFC=v&&v.flowchart&&v.flowchart.length;
+ const hasGI=v&&v.graphs&&v.graphs.length;
+ h+=`<div class="vl-tabs">
+  <button class="vl-tab ac-mm" onclick="vlSwitch('mm',this)">&#9899; Mind Map</button>
+  ${hasFC?'<button class="vl-tab" onclick="vlSwitch(\'fc\',this)">&#11835; Flowchart</button>':''}
+  ${hasGI?'<button class="vl-tab" onclick="vlSwitch(\'gi\',this)">&#128202; Graph Insights</button>':''}
+ </div>`;
+ // Mind map
+ h+=`<div class="vl-panel show" id="vl-mm">`;
+ const mmData=v&&v.mindmap?v.mindmap:{root:r.primaryTopic?r.primaryTopic.label:'Notes',branches:r.branches};
+ h+=renderMindMap(mmData);
+ h+=`<p style="font-size:.74rem;color:var(--mu);margin-top:.55rem;font-family:var(--mono)">&#128161; Mind map shows the full structure of the topic at a glance.</p></div>`;
+ // Flowchart
+ if(hasFC){
+  h+=`<div class="vl-panel" id="vl-fc">${renderFlowchart(v.flowchart)}<p style="font-size:.74rem;color:var(--mu);margin-top:.55rem;font-family:var(--mono)">&#128202; Follow each step to understand the logical sequence.</p></div>`;
+ }
+ // Graph insights
+ if(hasGI){
+  h+=`<div class="vl-panel" id="vl-gi"><div class="gi-grid">`;
+  v.graphs.forEach((g,gi)=>{
+   h+=`<div class="gi-card" style="animation-delay:${gi*55}ms"><div class="gi-plot">${graphSVG(g)}</div><div class="gi-info"><div class="gi-title">${g.title}</div><div class="gi-desc">${g.desc}</div><div class="gi-note">&#127919; ${g.note}</div></div></div>`;
+  });
+  h+=`</div></div>`;
+ }
+ document.getElementById('visual-content').innerHTML=h;
+}
+
+function vlSwitch(mode,btn){
+ ['mm','fc','gi'].forEach(m=>{const p=document.getElementById('vl-'+m);if(p)p.classList.remove('show');});
+ const p=document.getElementById('vl-'+mode);if(p)p.classList.add('show');
+ const tabs=btn.parentElement.querySelectorAll('.vl-tab');
+ tabs.forEach(t=>t.classList.remove('ac-mm','ac-fc','ac-gi'));
+ btn.classList.add(mode==='mm'?'ac-mm':mode==='fc'?'ac-fc':'ac-gi');
+}
+
+/* ═══════════════════════════════════════════════════════
+   AUDIO SYSTEM
+═══════════════════════════════════════════════════════ */
+let audioMode='notes';
+let speechUtter=null;
+let audioScripts={notes:'',exam:'',summary:''};
+
+function buildAudioScript(r){
+ // Notes script
+ let notes='';
+ if(r.primaryTopic)notes+=`Topic: ${r.primaryTopic.label}. `;
+ if(r.crashMode&&r.pack){
+  notes+=`This is a crash course on ${r.primaryTopic?r.primaryTopic.label:'this topic'}. `;
+  notes+=r.pack.items.map(stripTags).join('. ')+'. ';
+ } else {
+  r.sections.forEach(sec=>{
+   if(sec.heading)notes+=`${sec.heading}. `;
+   sec.bullets.forEach(b=>notes+=stripTags(b.html)+'. ');
+  });
+ }
+ // Exam script
+ let exam=`Exam focus for ${r.primaryTopic?r.primaryTopic.label:'this topic'}. `;
+ r.examItems.forEach((item,i)=>exam+=`Point ${i+1}: ${stripTags(item.text)}. `);
+ // Summary script
+ let summary=`Quick summary. `;
+ if(r.primaryTopic)summary+=`Topic is ${r.primaryTopic.label}. `;
+ summary+=`Key terms: ${r.allKeyTerms.slice(0,8).join(', ')}. `;
+ if(r.examItems.length)summary+=`Most important exam point: ${stripTags(r.examItems[0].text)}.`;
+ audioScripts={notes,exam,summary};
+ document.getElementById('audio-reading-box').innerHTML=`<em style="color:var(--mu)">Press Play to hear your notes read aloud.</em>`;
+}
+
+function setAudioMode(mode,btn){
+ audioStop();
+ audioMode=mode;
+ document.querySelectorAll('.audio-mode-btn').forEach(b=>b.classList.remove('active'));
+ btn.classList.add('active');
+ const preview=audioScripts[mode]||'';
+ document.getElementById('audio-reading-box').innerHTML=`<em style="color:var(--mu)">${esc(preview.slice(0,200))}${preview.length>200?'…':''}</em>`;
+}
+
+function audioPlay(){
+ if(!('speechSynthesis' in window)){
+  alert('Your browser does not support Speech Synthesis. Try Chrome or Edge.');return;
+ }
+ window.speechSynthesis.cancel();
+ const text=audioScripts[audioMode]||'No content to read.';
+ speechUtter=new SpeechSynthesisUtterance(text);
+ speechUtter.rate=parseFloat(document.getElementById('speech-rate').value)||1;
+ speechUtter.pitch=1;speechUtter.volume=1;
+ // Show text in reading box
+ document.getElementById('audio-reading-box').innerHTML=esc(text);
+ speechUtter.onstart=()=>{
+  document.getElementById('waveform').classList.add('playing');
+  document.getElementById('audio-status').className='audio-status playing';
+  document.getElementById('audio-status').textContent='Playing \u2014 listening to your notes\u2026';
+  document.getElementById('play-btn').disabled=true;
+  document.getElementById('pause-btn').disabled=false;
+ };
+ speechUtter.onend=speechUtter.onerror=()=>{
+  document.getElementById('waveform').classList.remove('playing');
+  document.getElementById('audio-status').className='audio-status stopped';
+  document.getElementById('audio-status').textContent='Finished \u2014 press Play to listen again';
+  document.getElementById('play-btn').disabled=false;
+  document.getElementById('pause-btn').disabled=true;
+ };
+ window.speechSynthesis.speak(speechUtter);
+}
+
+function audioPause(){
+ if(window.speechSynthesis.speaking&&!window.speechSynthesis.paused){
+  window.speechSynthesis.pause();
+  document.getElementById('waveform').classList.remove('playing');
+  document.getElementById('audio-status').textContent='Paused \u2014 press Play to resume';
+  document.getElementById('pause-btn').textContent='\u25B6 Resume';
+  document.getElementById('pause-btn').onclick=audioResume;
+ }
+}
+function audioResume(){
+ window.speechSynthesis.resume();
+ document.getElementById('waveform').classList.add('playing');
+ document.getElementById('audio-status').textContent='Playing\u2026';
+ document.getElementById('pause-btn').textContent='\u23F8 Pause';
+ document.getElementById('pause-btn').onclick=audioPause;
+}
+function audioStop(){
+ window.speechSynthesis.cancel();
+ document.getElementById('waveform').classList.remove('playing');
+ document.getElementById('audio-status').className='audio-status stopped';
+ document.getElementById('audio-status').textContent='Stopped \u2014 press Play to begin';
+ document.getElementById('play-btn').disabled=false;
+ document.getElementById('pause-btn').disabled=true;
+ document.getElementById('pause-btn').textContent='\u23F8 Pause';
+ document.getElementById('pause-btn').onclick=audioPause;
+}
+function audioChangeRate(val){
+ if(window.speechSynthesis.speaking){audioStop();setTimeout(audioPlay,100);}
+}
+
+/* ═══════════════════════════════════════════════════════
+   INTERACTIVE SYSTEM
+═══════════════════════════════════════════════════════ */
+let intMode='step';
+let stepIdx=0;
+let qaIdx=0;
+let qaScore={got:0,missed:0};
+let qaRevealed=false;
+
+function setIntMode(mode,btn){
+ intMode=mode;
+ document.querySelectorAll('.int-mode-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+ document.querySelectorAll('.int-panel').forEach(p=>p.classList.remove('show'));
+ document.getElementById('int-'+mode).classList.add('show');
+}
+
+/* ─── STEP BY STEP ─── */
+function renderInteractive(r){
+ renderStep(r);
+ renderQuiz(r);
+ renderExplore(r);
+}
+
+function renderStep(r){
+ const steps=G.flowSteps||[];
+ if(!steps.length){
+  document.getElementById('step-content').innerHTML='<div class="empty-state"><div class="es-icon">&#9654;</div><p>No step-by-step data available. Try a more specific topic.</p></div>';return;
+ }
+ stepIdx=0;
+ renderStepCard(steps,0);
+}
+
+function renderStepCard(steps,idx){
+ const s=steps[idx];
+ const pct=Math.round(((idx+1)/steps.length)*100);
+ const typeClass=s.type==='decision'?'decision':s.type==='output'?'output':'';
+ let h=`<div class="step-progress"><div class="step-track"><div class="step-fill" id="step-fill" style="width:${pct}%"></div></div><span>${idx+1} / ${steps.length}</span></div>`;
+ h+=`<div class="step-card"><span class="step-label">${s.label} ${typeClass?'('+s.type+')'  :''}</span><div class="step-content">${boldify(s.text,G.primaryTopic?G.primaryTopic.keyTerms||[]:[])}</div></div>`;
+ h+=`<div class="step-nav">
+  <button class="btn btn-ghost btn-sm" onclick="stepPrev()" ${idx===0?'disabled':''}>&#9664; Prev</button>
+  <button class="btn btn-green btn-sm" onclick="stepNext()" ${idx===steps.length-1?'disabled':''}>Next &#9654;</button>
+  <span class="step-counter">${idx+1} of ${steps.length}</span>
+ </div>`;
+ // Step list overview
+ h+=`<div class="step-list">`;
+ steps.forEach((st,i)=>{
+  const cls=i<idx?'done':i===idx?'current':'';
+  h+=`<div class="step-item ${cls}"><span class="si-num">${i+1}.</span><span>${stripTags(st.text).slice(0,70)}${stripTags(st.text).length>70?'…':''}</span></div>`;
+ });
+ h+=`</div>`;
+ document.getElementById('step-content').innerHTML=h;
+ stepIdx=idx;
+}
+function stepNext(){const steps=G.flowSteps||[];if(stepIdx<steps.length-1)renderStepCard(steps,stepIdx+1);}
+function stepPrev(){const steps=G.flowSteps||[];if(stepIdx>0)renderStepCard(steps,stepIdx-1);}
+
+/* ─── SELF TEST ─── */
+function renderQuiz(r){
+ qaIdx=0;qaScore={got:0,missed:0};qaRevealed=false;
+ renderQACard(r.qaItems,0);
+}
+function renderQACard(items,idx){
+ if(idx>=items.length){renderQASummary();return;}
+ const item=items[idx];
+ const pct=Math.round((idx/items.length)*100);
+ let h=`<div class="qa-progress"><div class="qa-track"><div class="qa-fill" style="width:${pct}%"></div></div><span class="qa-score">&#9989; ${qaScore.got} &nbsp;&#10060; ${qaScore.missed}</span></div>`;
+ h+=`<div class="qa-card">
+  <span class="qa-tag">Q${idx+1} of ${items.length} &bull; ${esc(item.tag)}</span>
+  <div class="qa-q">${esc(item.q)}</div>
+  <div class="qa-a" id="qa-answer">${boldify(item.a,G.primaryTopic?G.primaryTopic.keyTerms||[]:[])}</div>
+  <div class="qa-controls">
+   <button class="btn btn-violet btn-sm" onclick="qaReveal()" id="qa-reveal-btn">&#128065; Reveal Answer</button>
+  </div>
+  <div class="qa-result-btns" id="qa-result" style="display:none">
+   <button class="btn btn-green btn-sm" onclick="qaResult(true)">&#9989; Got it</button>
+   <button class="btn btn-rose btn-sm" onclick="qaResult(false)">&#10060; Missed it</button>
+  </div>
+ </div>`;
+ document.getElementById('quiz-content').innerHTML=h;
+ qaIdx=idx;qaRevealed=false;
+}
+function qaReveal(){
+ document.getElementById('qa-answer').classList.add('show');
+ document.getElementById('qa-reveal-btn').style.display='none';
+ document.getElementById('qa-result').style.display='flex';
+ qaRevealed=true;
+}
+function qaResult(correct){
+ if(correct)qaScore.got++;else qaScore.missed++;
+ renderQACard(G.qaItems,qaIdx+1);
+}
+function renderQASummary(){
+ const total=qaScore.got+qaScore.missed;
+ const pct=total?Math.round((qaScore.got/total)*100):0;
+ const grade=pct>=80?{label:'Excellent!',color:'var(--green)'}:pct>=60?{label:'Good effort!',color:'var(--amber)'}:{label:'Keep practising',color:'var(--rose)'};
+ let h=`<div class="qa-summary">
+  <div class="qa-score-big" style="color:${grade.color}">${pct}%</div>
+  <div class="qa-score-lbl">${grade.label} &mdash; ${qaScore.got} of ${total} correct</div>
+  <div class="qa-badges">`;
+ for(let i=0;i<total;i++){const r=i<qaScore.got;h+=`<span class="qa-badge ${r?'qb-g':'qb-b'}">${r?'&#9989;':'&#10060;'}</span>`;}
+ h+=`</div>
+  <button class="btn btn-violet btn-sm" style="margin-top:1rem" onclick="restartQuiz()">&#9654; Retry Quiz</button>
+ </div>`;
+ document.getElementById('quiz-content').innerHTML=h;
+}
+function restartQuiz(){
+ qaScore={got:0,missed:0};qaRevealed=false;
+ renderQACard(G.qaItems,0);
+}
+
+/* ─── CONCEPT EXPLORER ─── */
+function renderExplore(r){
+ const branches=G.branches||[];
+ if(!branches.length){
+  document.getElementById('explore-content').innerHTML='<div class="empty-state"><div class="es-icon">&#128218;</div><p>No concept data available for this topic.</p></div>';return;
+ }
+ let h='<div class="toggle-list">';
+ branches.forEach((b,i)=>{
+  const col=b.color||'#f0a030';
+  const children=b.children||[];
+  h+=`<div class="toggle-item">
+   <div class="toggle-hd" onclick="toggleConcept(this)" id="tc-${i}">
+    <span class="toggle-icon" style="background:${col}22;color:${col};font-size:.85rem">&#9679;</span>
+    <span class="toggle-label">${esc(b.label)}</span>
+    <span style="font-family:var(--mono);font-size:.65rem;color:var(--mu);margin-right:.5rem">${children.length} points</span>
+    <span class="toggle-arrow">&#9660;</span>
+   </div>
+   <div class="toggle-body" id="tb-${i}">
+    <ul>${children.map(c=>`<li>${esc(typeof c==='string'?c:stripTags(c.html||c))}</li>`).join('')}</ul>
+   </div>
+  </div>`;
+ });
+ h+=`</div><p style="font-size:.74rem;color:var(--mu);margin-top:.9rem;font-family:var(--mono)">&#128218; Click any concept to expand it. Great for understanding structure before detail.</p>`;
+ document.getElementById('explore-content').innerHTML=h;
+}
+function toggleConcept(hd){
+ const i=hd.id.replace('tc-','');
+ const body=document.getElementById('tb-'+i);
+ const isOpen=hd.classList.contains('open');
+ hd.classList.toggle('open',!isOpen);
+ body.classList.toggle('show',!isOpen);
+}
+
+/* ═══════════════════════════════════════════════════════
+   COPY PLAIN TEXT
+═══════════════════════════════════════════════════════ */
+function buildPlain(){
+ let t='';
+ const body=document.getElementById('notes-content');
+ body.querySelectorAll('.topic-title').forEach(el=>{t+=`\n╔══════════════════════╗\n  ${el.textContent.trim()}\n╚══════════════════════╝\n`;});
+ body.querySelectorAll('.n-head').forEach(h=>{t+=`\n${h.textContent.trim().toUpperCase()}\n`;});
+ body.querySelectorAll('.blist li').forEach(li=>{
+  const tag=li.querySelector('.def-badge');const tx=li.querySelector('.tx');
+  t+=`${tag?'  [DEF] ':'  • '}${tx?tx.textContent.trim():''}\n`;
+ });
+ const ex=document.getElementById('exam-content');
+ if(ex){t+='\n── EXAM FOCUS ──\n';ex.querySelectorAll('.exam-card').forEach((c,i)=>{
+  const tx=c.querySelector('.exam-txt');const tg=c.querySelector('.exam-tag');
+  t+=`  ${i+1}. ${tx?tx.textContent.trim():''}${tg?' ['+tg.textContent.trim()+']':''}\n`;
+ });}
+ if(G.allKeyTerms&&G.allKeyTerms.length)t+=`\nKEY TERMS: ${G.allKeyTerms.join(', ')}\n`;
+ return t.trim();
+}
+
+/* ═══════════════════════════════════════════════════════
+   TAB SWITCHER
+═══════════════════════════════════════════════════════ */
+function switchTab(name,btn){
+ document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('show'));
+ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+ document.getElementById('tab-'+name).classList.add('show');
+ btn.classList.add('active');
+ if(name!=='audio')audioStop();
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN UI
+═══════════════════════════════════════════════════════ */
+function run(){
+ const raw=document.getElementById('inp').value.trim();
+ if(!raw){shake();return;}
+ const btn=document.getElementById('run-btn');
+ const proc=document.getElementById('proc');
+ btn.disabled=true;proc.classList.add('show');
+ const steps=['ps1','ps2','ps3','ps4','ps5'];
+ steps.forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('on'),i*130));
+ setTimeout(()=>{
+  G=process(raw);
+  // Reset tab to Notes
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('tab-notes').classList.add('show');
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.tab-btn[data-tab="notes"]').classList.add('active');
+  // Render all tabs
+  renderAll(G);
+  // Stats bar
+  const wc=raw.trim().split(/\s+/).length;
+  document.getElementById('stats-bar').innerHTML=`
+   <span class="sc amber">&#128204; ${G.topicCount>0?G.topicNames:'General notes'}</span>
+   <span class="sc">${wc} words in</span>
+   <span class="sc teal">&#128221; Notes</span>
+   <span class="sc violet">&#127919; Exam tips</span>
+   <span class="sc sky">&#127757; Visuals</span>
+   <span class="sc green">${G.crashMode?'&#9889; Crash mode':'&#128266; Audio &amp; &#9995; Interactive'}</span>`;
+  const card=document.getElementById('out-card');
+  card.classList.remove('show');void card.offsetWidth;card.classList.add('show');
+  setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'start'}),80);
+  steps.forEach(id=>document.getElementById(id).classList.remove('on'));
+  proc.classList.remove('show');btn.disabled=false;
+ },750);
+}
+
+function clearAll(){
+ document.getElementById('inp').value='';updateMeta();
+ audioStop();
+ const c=document.getElementById('out-card');c.classList.remove('show');
+ document.getElementById('inp').focus();
+}
+function copyNotes(){
+ const btn=document.getElementById('copy-btn');
+ const ok=()=>{
+  btn.classList.add('btn-ok');
+  btn.innerHTML=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+  setTimeout(()=>{btn.classList.remove('btn-ok');btn.innerHTML=`<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy Notes`;},2500);
+ };
+ navigator.clipboard.writeText(buildPlain()).then(ok).catch(()=>{
+  const ta=document.createElement('textarea');ta.value=buildPlain();ta.style='position:fixed;opacity:0';
+  document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);ok();
+ });
+}
+function shake(){
+ const el=document.getElementById('inp');
+ el.style.borderColor='var(--a2)';el.style.boxShadow='0 0 0 3px rgba(224,106,24,.14)';
+ el.focus();setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},850);
+}
+function updateMeta(){
+ const val=document.getElementById('inp').value;
+ const el=document.getElementById('char-c');
+ el.textContent=val.length.toLocaleString()+' char'+(val.length!==1?'s':'');
+ el.classList.toggle('warn',val.length>3500);
+ const words=val.trim().split(/\s+/).filter(Boolean).length;
+ const mt=document.getElementById('mode-tag');
+ if(!val.trim()){mt.textContent='—';return;}
+ if(words<55){mt.textContent='⚡ Crash Course';return;}
+ const t=detectTopics(val);
+ mt.textContent=t.length>1?`📚 ${t.length} topics`:t.length===1?`${t[0].icon} ${t[0].label}`:'📋 General';
+}
+document.getElementById('inp').addEventListener('input',updateMeta);
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')run();});
+// Stop speech if tab/window is closed
+window.addEventListener('beforeunload',()=>window.speechSynthesis&&window.speechSynthesis.cancel());
+</script>
+</body>
+</html>
